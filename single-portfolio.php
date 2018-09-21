@@ -1,16 +1,105 @@
 <?php global $archi_option; ?>
 <?php if($archi_option['ajax_work']!=false){ ?>
 	<div class="container project-view">
+        <style>
+            .slideshow_display{
+                position: relative;
+                width: 500px;
+                height: 400px;
+                border: solid 1px #cccccc;
+            }
+            .slideshow_display img{
+                display: block;
+                position: absolute;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                right: 0;
+                margin: auto;
+            }
+            .slideshow_item{
+                display: inline-block;
+            }
+            .slideshow_list{
+                padding-top: 15px;
+                clear: both;
+            }
+            .slideshow_item{
+                float: left;
+                margin-left: 23px;
+                padding: 3px;
+            }
+            .slideshow_item:first-child{
+                margin-left: 0;
+            }
+            .slideshow {
+                padding: 200px;
+                width: 906px;
+            }
+            .slideshow_display img{
+                width: auto;
+                height: 250px;
+            }
+            .slideshow_list .slideshow_item img{
+                width: auto;
+                max-height: 80px;
+            }
+        </style>
+        <script>
+            $(document).ready(function () {
+                //клик по ссылкам верхнего уровня
+                $('.slideshow_pic').on('click', function (e) {
+                    // запрещает дефолдное действие эл. переход по ссылке
+                    e.preventDefault();
+                    // сохраняем переменные
+                    var $this = $(this),
+                        //сохраняем li по которой кликнули
+                        item = $this.closest('.slideshow_item'),
+                        //сохраняем контент со слайдером
+                        container = $this.closest('.slideshow'),
+                        //сохраняем блок отображения вида
+                        display = container.find('.slideshow_display'),
+                        //принцип работы слайдера берем src у img  и вставляем его в блок slideshow_display
+                        paht = item.find('img').attr('src'),
+                        // время анимации
+                        duration =  300;
+                    if (!item.hasClass('active')){
+                        //добавили клас у актива, чтоб не нажимался анимация на одином и тодже слайде, а у остальных его убираем
+                        item.addClass('active').siblings().removeClass('active');
+                        display.find('img').fadeOut(duration, function () {
+                            $(this).attr('src',paht).fadeIn(duration);
+                        })
+                    }
+                });
+            });
+        </script>
 		<?php while (have_posts()) : the_post()?>
             <?php
             //todo: а также обратную связь сделать с прикреплением текущей записи
+            //todo: добавить поле для ютуб видео и ставлять шорткодами
+            //todo: сдлеать дизайн сингловых страниц ибо отдается не то что нужно
             $allimages = '';
-            foreach (explode(',',get_field( "images" )) as $item) {
-                $allimages .= '[vc_single_image image="'.$item.'" img_size="full" css=".vc_custom_'.mt_rand(10000000,  mt_getrandmax()).'{margin-bottom: 60px !important;}"]';
+            foreach (explode(',',get_field( "images" )) as $key=>$item) {
+                $temp = $key == 0?'active':'';
+                $allimages .='<li class="slideshow_item '. $temp .'"><a href="#" class="slideshow_pic"><img src="'.wp_get_attachment_image_src($item,'full')[0].'" alt=""></a></li>';
+//                $allimages .= '[vc_single_image image="'.$item.'" img_size="full" css=".vc_custom_'.mt_rand(10000000,  mt_getrandmax()).'{margin-bottom: 60px !important;}"]';
             }
-            $content = '[vc_row][vc_column width="2/3"]'.$allimages.'[/vc_column][vc_column width="1/3"][vc_column_text]<div class="project-info">
+            $content = '[vc_row][vc_column width="2/3"]'.'
+<div class="wrapper">
+         <div class="container">
+             <div class="slideshow">
+                 <div class="slideshow_display">
+                     <img src="img/adaptive-imac.png" alt="">
+                 </div>
+                 <ul class="slideshow_list">
+                 '.$allimages.'
+                 </ul>
+             </div>
+         </div>
+     </div>
+            [/vc_column][vc_column width="1/3"][vc_column_text]<div class="project-info">
                     <h2>'.get_the_title().'</h2>
-                    <input type="button" value="Обратная связь">
+                    <input type="button"  value="Обратная связь">
                     <div class="details">
                         <div class="info-text"><span class="title">Цена</span><span class="val">'.get_field( "price" ).'</span></div>
                         <div class="info-text"><span class="title">Размер</span><span class="val">'.get_field( "size" ).'</span></div>

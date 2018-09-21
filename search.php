@@ -14,8 +14,7 @@ $imgheight = (!empty($archi_option['project_image_height'])) ? $archi_option['pr
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h1><?php printf( __( 'Search results for: %s', 'archi' ), get_search_query() ); ?></h1>
-                    <?php 
+                    <?php
                         if(function_exists('archi_breadcrumbs')): 
                             archi_breadcrumbs();
                         endif;
