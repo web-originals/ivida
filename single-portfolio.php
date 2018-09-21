@@ -79,8 +79,14 @@
             //todo: добавить поле для ютуб видео и ставлять шорткодами
             //todo: сдлеать дизайн сингловых страниц ибо отдается не то что нужно
             $allimages = '';
+            $first_image = '';
             foreach (explode(',',get_field( "images" )) as $key=>$item) {
-                $temp = $key == 0?'active':'';
+                if($key == 0){
+                    $first_image = wp_get_attachment_image_src($item,'full')[0];
+                    $temp = 'active';
+                }else{
+                    $temp = '';
+                }
                 $allimages .='<li class="slideshow_item '. $temp .'"><a href="#" class="slideshow_pic"><img src="'.wp_get_attachment_image_src($item,'full')[0].'" alt=""></a></li>';
 //                $allimages .= '[vc_single_image image="'.$item.'" img_size="full" css=".vc_custom_'.mt_rand(10000000,  mt_getrandmax()).'{margin-bottom: 60px !important;}"]';
             }
@@ -89,7 +95,7 @@
          <div class="container">
              <div class="slideshow">
                  <div class="slideshow_display">
-                     <img src="img/adaptive-imac.png" alt="">
+                     <img src="'.$first_image.'" alt="">
                  </div>
                  <ul class="slideshow_list">
                  '.$allimages.'
