@@ -4,17 +4,18 @@
         <style>
             .slideshow_display{
                 position: relative;
-                width: 500px;
-                height: 400px;
+                width: auto;
+                height: 271px;
                 border: solid 1px #cccccc;
+                overflow: hidden;
             }
             .slideshow_display img{
                 display: block;
                 position: absolute;
-                top: 0;
-                left: 0;
-                bottom: 0;
-                right: 0;
+                 top: 0;
+                 left: 0;
+                 bottom: 0;
+                 right: 0;
                 margin: auto;
             }
             .slideshow_item{
@@ -33,8 +34,8 @@
                 margin-left: 0;
             }
             .slideshow {
-                padding: 200px;
-                width: 906px;
+                padding: 20px;
+                width: 100%;
             }
             .slideshow_display img{
                 width: auto;
@@ -43,6 +44,15 @@
             .slideshow_list .slideshow_item img{
                 width: auto;
                 max-height: 80px;
+            }
+            .btn_call-back{
+                border: none;
+                background-color: red;
+                padding: 2% 4%;
+                color: black;
+            }
+            .btn_call-back:hover{
+                background-color: #cccccc;
             }
         </style>
         <script>
@@ -91,8 +101,8 @@
 //                $allimages .= '[vc_single_image image="'.$item.'" img_size="full" css=".vc_custom_'.mt_rand(10000000,  mt_getrandmax()).'{margin-bottom: 60px !important;}"]';
             }
             $content = '[vc_row][vc_column width="2/3"]'.'
-<div class="wrapper">
-         <div class="container">
+<div class="wrapper col-lg-10">
+         <div class="">
              <div class="slideshow">
                  <div class="slideshow_display">
                      <img src="'.$first_image.'" alt="">
@@ -105,7 +115,7 @@
      </div>
             [/vc_column][vc_column width="1/3"][vc_column_text]<div class="project-info">
                     <h2>'.get_the_title().'</h2>
-                    <input type="button"  value="Обратная связь">
+                    <input class="btn_call-back" type="button"  value="Обратная связь">
                     <div class="details">
                         <div class="info-text"><span class="title">Цена</span><span class="val">'.get_field( "price" ).'</span></div>
                         <div class="info-text"><span class="title">Размер</span><span class="val">'.get_field( "size" ).'</span></div>
