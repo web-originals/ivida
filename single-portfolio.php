@@ -75,8 +75,7 @@
         </script>
 		<?php while (have_posts()) : the_post()?>
             <?php
-            //todo: а также обратную связь сделать с прикреплением текущей записи
-            //todo: добавить поле для ютуб видео и ставлять шорткодами
+            //todo: добавить поле для ютуб видео и ставлять шорткодами(удалить этот блок)
             //todo: сдлеать дизайн сингловых страниц ибо отдается не то что нужно
             $allimages = '';
             $first_image = '';
@@ -105,7 +104,9 @@
      </div>
             [/vc_column][vc_column width="1/3"][vc_column_text]<div class="project-info">
                     <h2>'.get_the_title().'</h2>
-                    <input type="button"  value="Обратная связь">
+                    <a href="'.get_home_url().'/contact/?add='.$post->ID.'">
+                        <button>Обратная связь</button>
+                    </a>
                     <div class="details">
                         <div class="info-text"><span class="title">Цена</span><span class="val">'.get_field( "price" ).'</span></div>
                         <div class="info-text"><span class="title">Размер</span><span class="val">'.get_field( "size" ).'</span></div>

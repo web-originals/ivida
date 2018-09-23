@@ -5,7 +5,7 @@
  * Date: 20.09.2018
  * Time: 21:42
  */
-
+// todo: хлебные крошки переименовать на русский
 
 // стили просто так не подключаются на странице поиска
 function header_theme(){
@@ -37,6 +37,25 @@ function edit_admin_menus() {
 }
 add_action( 'admin_menu', 'edit_admin_menus' );
 
+
+// contact form 7 прикрепление записи с кнопки обратная связь [feedback-button-click]
+function feedback_form() {
+    if(isset($_REQUEST['add'])){
+        $thumbnail_attributes = wp_get_attachment_image_src( get_post_thumbnail_id($_REQUEST['add']), 'medium' );
+        return '<div class="feedback-post"><p>'.get_the_title($_REQUEST['add']).'</p><img  src ="'.$thumbnail_attributes[0].'"></div>';
+    }
+    else {
+        return "";
+    }
+}
+wpcf7_add_form_tag('feedback', 'feedback_form');
+
+
+function feedback_form_send() {
+    return get_permalink($_REQUEST['add']);
+}
+wpcf7_add_form_tag('feedback_send', 'feedback_form_send');
+add_shortcode('feedback_send', 'feedback_form_send');
 
 ## заменим слово "записи" на "посты" для типа записей 'post'
 //$labels = apply_filters( "post_type_labels_{$post_type}", $labels );
