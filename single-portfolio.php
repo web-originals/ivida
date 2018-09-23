@@ -48,7 +48,13 @@ function get_content_portfolio()
         }
     </style>
     <script>
-        document.addEventListener("DOMContentLoaded", function(event) {
+        <?php if( isset($_SERVER['HTTP_X_REQUESTED_WITH']) && !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'){
+            ?>document.addEventListener("DOMContentLoaded", function(event) {
+       <?php
+                $temp = true;
+        } else{
+            $temp = false;
+        }?>
             $(document).ready(function () {
                 //клик по ссылкам верхнего уровня
                 $('.slideshow_pic').on('click', function (e) {
@@ -75,7 +81,13 @@ function get_content_portfolio()
                     }
                 });
             });
-        });
+       <?php
+if($temp){
+        ?>
+            });
+        <?php
+}
+        ?>
     </script>
 <?php
     global $post;
