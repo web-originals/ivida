@@ -44,7 +44,7 @@ add_action( 'admin_menu', 'edit_admin_menus' );
 function feedback_form() {
     if(isset($_REQUEST['add'])){
         $thumbnail_attributes = wp_get_attachment_image_src( get_post_thumbnail_id($_REQUEST['add']), 'medium' );
-        return '<div class="feedback-post"><p>'.get_the_title($_REQUEST['add']).'</p><img  src ="'.$thumbnail_attributes[0].'"></div>';
+        return '<a href="'.get_permalink($_REQUEST['add']).'"><div class="feedback-post"><p>'.get_the_title($_REQUEST['add']).'</p><img  src ="'.$thumbnail_attributes[0].'"></div></a>';
     }
     else {
         return "";
