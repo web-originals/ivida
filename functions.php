@@ -46,6 +46,13 @@ function feedback_form() {
 }
 wpcf7_add_form_tag('feedback', 'feedback_form');
 
+
+function feedback_form_send() {
+    return get_permalink($_REQUEST['add']);
+}
+wpcf7_add_form_tag('feedback_send', 'feedback_form_send');
+add_shortcode('feedback_send', 'feedback_form_send');
+
 ## заменим слово "записи" на "посты" для типа записей 'post'
 //$labels = apply_filters( "post_type_labels_{$post_type}", $labels );
 add_filter('post_type_labels_portfolio', 'rename_portfolio_labels');
