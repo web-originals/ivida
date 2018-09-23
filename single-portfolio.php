@@ -48,7 +48,7 @@ function get_content_portfolio()
         }
     </style>
     <script>
-        <?php if( isset($_SERVER['HTTP_X_REQUESTED_WITH']) && !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'){
+        <?php if(!( isset($_SERVER['HTTP_X_REQUESTED_WITH']) && !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')){
             ?>document.addEventListener("DOMContentLoaded", function(event) {
        <?php
                 $temp = true;
