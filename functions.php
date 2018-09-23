@@ -6,7 +6,7 @@
  * Time: 21:42
  */
 // хлебные крошки
-add_filter( 'woocommerce_breadcrumb_defaults', 'jk_change_breadcrumb_home_text' );
+add_filter( 'woocommerce_breadcrumb_defaults', 'jk_change_breadcrumb_home_text',90 );
 function jk_change_breadcrumb_home_text( $defaults ) {
 // Изменяем текст для главной страницы с 'Главная' на 'Аппартаменты'
     $defaults['home'] = 'Главная';
