@@ -1,20 +1,23 @@
-<?php global $archi_option; ?>
-<?php if($archi_option['ajax_work']!=false){ ?>
-	<div class="container project-view">
+<?php global $archi_option;?>
+<?php
+function get_content_portfolio()
+{
+    ?>
         <style>
             .slideshow_display{
                 position: relative;
-                width: 500px;
-                height: 400px;
+                width: auto;
+                height: 271px;
                 border: solid 1px #cccccc;
+                overflow: hidden;
             }
             .slideshow_display img{
                 display: block;
                 position: absolute;
-                top: 0;
-                left: 0;
-                bottom: 0;
-                right: 0;
+                 top: 0;
+                 left: 0;
+                 bottom: 0;
+                 right: 0;
                 margin: auto;
             }
             .slideshow_item{
@@ -33,8 +36,8 @@
                 margin-left: 0;
             }
             .slideshow {
-                padding: 200px;
-                width: 906px;
+                padding: 20px;
+                width: 100%;
             }
             .slideshow_display img{
                 width: auto;
@@ -44,8 +47,24 @@
                 width: auto;
                 max-height: 80px;
             }
+            .btn_call-back{
+                border: none;
+                background-color: red;
+                padding: 2% 4%;
+                color: black;
+            }
+            .btn_call-back:hover{
+                background-color: #cccccc;
+            }
         </style>
-        <script>
+    <script>
+        <?php if(!( isset($_SERVER['HTTP_X_REQUESTED_WITH']) && !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')){
+            ?>document.addEventListener("DOMContentLoaded", function(event) {
+       <?php
+                $temp = true;
+        } else{
+            $temp = false;
+        }?>
             $(document).ready(function () {
                 //клик по ссылкам верхнего уровня
                 $('.slideshow_pic').on('click', function (e) {
@@ -62,58 +81,71 @@
                         //принцип работы слайдера берем src у img  и вставляем его в блок slideshow_display
                         paht = item.find('img').attr('src'),
                         // время анимации
-                        duration =  300;
-                    if (!item.hasClass('active')){
+                        duration = 300;
+                    if (!item.hasClass('active')) {
                         //добавили клас у актива, чтоб не нажимался анимация на одином и тодже слайде, а у остальных его убираем
                         item.addClass('active').siblings().removeClass('active');
                         display.find('img').fadeOut(duration, function () {
-                            $(this).attr('src',paht).fadeIn(duration);
+                            $(this).attr('src', paht).fadeIn(duration);
                         })
                     }
                 });
             });
-        </script>
-		<?php while (have_posts()) : the_post()?>
-            <?php
-            //todo: добавить поле для ютуб видео и ставлять шорткодами(удалить этот блок)
-            //todo: сдлеать дизайн сингловых страниц ибо отдается не то что нужно
-            $allimages = '';
-            $first_image = '';
-            foreach (explode(',',get_field( "images" )) as $key=>$item) {
-                if($key == 0){
-                    $first_image = wp_get_attachment_image_src($item,'full')[0];
-                    $temp = 'active';
-                }else{
-                    $temp = '';
-                }
-                $allimages .='<li class="slideshow_item '. $temp .'"><a href="#" class="slideshow_pic"><img src="'.wp_get_attachment_image_src($item,'full')[0].'" alt=""></a></li>';
+       <?php
+if($temp){
+        ?>
+            });
+        <?php
+}
+        ?>
+    </script>
+<?php
+    global $post;
+    $allimages = '';
+    $first_image = '';
+    foreach (explode(',', get_field("images")) as $key => $item) {
+        if ($key == 0) {
+            $first_image = wp_get_attachment_image_src($item, 'full')[0];
+            $temp = 'active';
+        } else {
+            $temp = '';
+        }
+        $allimages .= '<li class="slideshow_item ' . $temp . '"><a href="#" class="slideshow_pic"><img src="' . wp_get_attachment_image_src($item, 'full')[0] . '" alt=""></a></li>';
 //                $allimages .= '[vc_single_image image="'.$item.'" img_size="full" css=".vc_custom_'.mt_rand(10000000,  mt_getrandmax()).'{margin-bottom: 60px !important;}"]';
-            }
-            $content = '[vc_row][vc_column width="2/3"]'.'
-<div class="wrapper">
-         <div class="container">
+    }
+    $content = '[vc_row][vc_column width="2/3"]' . '
+<div class="wrapper" col-lg-10">
+         <div class="">
              <div class="slideshow">
                  <div class="slideshow_display">
-                     <img src="'.$first_image.'" alt="">
+                     <img src="' . $first_image . '" alt="">
                  </div>
                  <ul class="slideshow_list">
-                 '.$allimages.'
+                 ' . $allimages . '
                  </ul>
              </div>
          </div>
      </div>
             [/vc_column][vc_column width="1/3"][vc_column_text]<div class="project-info">
-                    <h2>'.get_the_title().'</h2>
-                    <a href="'.get_home_url().'/contact/?add='.$post->ID.'">
-                        <button>Обратная связь</button>
+                    <h2>' . get_the_title() . '</h2>
+                    <a href="' . get_home_url() . '/contact/?add=' . $post->ID . '">
+                        <button class="btn_call-back">Обратная связь</button>
                     </a>
                     <div class="details">
-                        <div class="info-text"><span class="title">Цена</span><span class="val">'.get_field( "price" ).'</span></div>
-                        <div class="info-text"><span class="title">Размер</span><span class="val">'.get_field( "size" ).'</span></div>
-                        <div class="info-text"><span class="title">Вес</span><span class="val">'.get_field( "weight" ).'</span></div>
-                    </div>'.get_the_content().'
+                        <div class="info-text"><span class="title">Цена</span><span class="val">' . get_field("price") . '</span></div>
+                        <div class="info-text"><span class="title">Размер</span><span class="val">' . get_field("size") . '</span></div>
+                        <div class="info-text"><span class="title">Вес</span><span class="val">' . get_field("weight") . '</span></div>
+                    </div>' . get_the_content() . '
                 </div>[/vc_column_text][/vc_column][/vc_row]';
-            echo  apply_filters( 'the_content',$content);?>
+    return apply_filters('the_content', $content);
+}
+?>
+<?php if($archi_option['ajax_work']!=false && isset($_SERVER['HTTP_X_REQUESTED_WITH']) && !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'){ ?>
+	<div class="container project-view">
+		<?php while (have_posts()) : the_post()?>
+            <?php
+            echo get_content_portfolio();
+        ?>
 		<?php endwhile; ?>
 	</div>		
 <?php }else { ?>
@@ -183,7 +215,7 @@
 		<div id="content">
 			<?php if ( have_posts() ) : ?>
 				<?php while (have_posts()) : the_post(); ?>
-					<?php the_content(); ?>
+					<?php echo get_content_portfolio(); ?>
 				<?php endwhile; ?>			
 			<?php endif; ?>
 			<section class="single-portfolio-bottom">
@@ -192,7 +224,7 @@
 						<div class="col-md-12">
 							<?php if ($archi_option['project_sharing']!=false) { ?>
 								<div class="socials-portfolio socials-rounded">
-									<h4><?php esc_html_e('Share:', 'archi'); ?></h4>
+									<h4>Поделиться:</h4>
 									<div class="socials-sharing"> 
 										<a class="socials-item" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=<?php the_permalink(); ?>" title="Facebook"><i class="fa fa-facebook"></i></a> 
 										<a class="socials-item" target="_blank" href="https://twitter.com/intent/tweet?text=<?php the_title(); ?>&url=<?php the_permalink(); ?>" title="Twitter"><i class="fa fa-twitter"></i></a> 

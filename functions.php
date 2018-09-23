@@ -9,7 +9,9 @@
 
 // стили просто так не подключаются на странице поиска
 function header_theme(){
-    if(is_search()){
+
+    if(is_search() || is_singular( 'portfolio' )){
+        var_dump($_REQUEST);
         ?>
         <link rel="stylesheet" id="js_composer_front-css" href="<?php echo get_home_url() ?>/wp-content/uploads/js_composer/js_composer_front_custom.css?ver=5.5.2" type="text/css" media="all">
         <?php
@@ -42,7 +44,7 @@ add_action( 'admin_menu', 'edit_admin_menus' );
 function feedback_form() {
     if(isset($_REQUEST['add'])){
         $thumbnail_attributes = wp_get_attachment_image_src( get_post_thumbnail_id($_REQUEST['add']), 'medium' );
-        return '<div class="feedback-post"><p>'.get_the_title($_REQUEST['add']).'</p><img  src ="'.$thumbnail_attributes[0].'"></div>';
+        return '<a href="'.get_permalink($_REQUEST['add']).'"><div class="feedback-post"><p>'.get_the_title($_REQUEST['add']).'</p><img  src ="'.$thumbnail_attributes[0].'"></div></a>';
     }
     else {
         return "";
