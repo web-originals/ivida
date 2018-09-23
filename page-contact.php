@@ -82,10 +82,10 @@
                         <?php get_sidebar();?>
                     </div>
                 <?php } ?>
-                <p>КОНТАКТЫ</p>
+
 
             </div>
         </div>
     </div>
-
+    <p>КОНТАКТЫ</p>
 <?php get_footer(); ?>
