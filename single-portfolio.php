@@ -75,10 +75,8 @@
         </script>
 		<?php while (have_posts()) : the_post()?>
             <?php
-            //todo: а также обратную связь сделать с прикреплением текущей записи
-            //todo: добавить поле для ютуб видео и ставлять шорткодами
+            //todo: добавить поле для ютуб видео и ставлять шорткодами(удалить этот блок)
             //todo: сдлеать дизайн сингловых страниц ибо отдается не то что нужно
-            //todo: в кнопку вставить гет запрос и на форме читать и дописывать в форму отправки инпуты на php
             $allimages = '';
             $first_image = '';
             foreach (explode(',',get_field( "images" )) as $key=>$item) {
@@ -107,7 +105,7 @@
             [/vc_column][vc_column width="1/3"][vc_column_text]<div class="project-info">
                     <h2>'.get_the_title().'</h2>
                     <a href="'.get_home_url().'/contact/?add='.$post->ID.'">
-                        <button>Обратная связь"</button>
+                        <button>Обратная связь</button>
                     </a>
                     <div class="details">
                         <div class="info-text"><span class="title">Цена</span><span class="val">'.get_field( "price" ).'</span></div>

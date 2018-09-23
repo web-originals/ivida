@@ -39,10 +39,14 @@ add_action( 'admin_menu', 'edit_admin_menus' );
 
 
 // contact form 7 прикрепление записи с кнопки обратная связь [feedback-button-click]
-
 function feedback_form() {
-    $thumbnail_attributes = wp_get_attachment_image_src( get_post_thumbnail_id($_REQUEST['add']), 'medium' ); // возвращает массив параметров миниатюры
-    return '<p>'.get_the_title($_REQUEST['add']).'<p><img src ="'.$thumbnail_attributes[0].'">';
+    if(isset($_REQUEST['add'])){
+        $thumbnail_attributes = wp_get_attachment_image_src( get_post_thumbnail_id($_REQUEST['add']), 'medium' );
+        return '<div class="feedback-post"><p>'.get_the_title($_REQUEST['add']).'</p><img  src ="'.$thumbnail_attributes[0].'"></div>';
+    }
+    else {
+        return "";
+    }
 }
 wpcf7_add_form_tag('feedback', 'feedback_form');
 
