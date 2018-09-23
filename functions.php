@@ -38,6 +38,20 @@ function edit_admin_menus() {
 add_action( 'admin_menu', 'edit_admin_menus' );
 
 
+// contact form 7 прикрепление записи с кнопки обратная связь [feedback-button-click]
+
+wpcf7_add_shortcode('feedback-button-click', 'wpcf7_sourceurl_shortcode_handler', true);
+
+function wpcf7_sourceurl_shortcode_handler($tag) {
+    if (!is_array($tag)) return '';
+
+    $name = $tag['name'];
+    if (empty($name)) return '';
+
+    $html = '<input type="text" name="' . $name . '" value="http://' . $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"] . '" />';
+    return $html;
+}
+
 ## заменим слово "записи" на "посты" для типа записей 'post'
 //$labels = apply_filters( "post_type_labels_{$post_type}", $labels );
 add_filter('post_type_labels_portfolio', 'rename_portfolio_labels');
