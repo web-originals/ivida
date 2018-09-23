@@ -106,7 +106,7 @@
      </div>
             [/vc_column][vc_column width="1/3"][vc_column_text]<div class="project-info">
                     <h2>'.get_the_title().'</h2>
-                    <a href="http://localhost/mebel/%D0%BA%D0%BE%D0%BD%D1%82%D0%B0%D0%BA%D1%82%D1%8B/?add='.$post->ID.'">
+                    <a href="'.get_home_url().'/contact/?add='.$post->ID.'">
                         <button>Обратная связь"</button>
                     </a>
                     <div class="details">
