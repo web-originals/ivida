@@ -134,8 +134,6 @@ if($temp){
 	<div class="container project-view">
 		<?php while (have_posts()) : the_post()?>
             <?php
-            //todo: добавить поле для ютуб видео и ставлять шорткодами(удалить этот блок)
-            //todo: сдлеать дизайн сингловых страниц ибо отдается не то что нужно
             echo get_content_portfolio();
         ?>
 		<?php endwhile; ?>
