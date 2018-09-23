@@ -297,8 +297,6 @@ if( function_exists('acf_add_local_field_group') ):
 
 endif;
 
-if ( ! function_exists( 'archi_breadcrumbs' ) ) :
-    /* Archi Custom breadcrumb */
     function archi_breadcrumbs() {
         $text['home']     = "Главная"; // text for the 'Home' link
         $text['category'] = '%s'; // text for a category page
@@ -433,4 +431,3 @@ if ( ! function_exists( 'archi_breadcrumbs' ) ) :
 
         }
     }
-endif;
