@@ -100,7 +100,7 @@ if($temp){
         } else {
             $temp = '';
         }
-        $allimages .= '<li class="slideshow_item ' . $temp . '"><a href="#slider" class="slideshow_pic"><img src="' . wp_get_attachment_image_src($item, 'full')[0] . '" alt=""></a></li>';
+        $allimages .= '<li class="slideshow_item ' . $temp . '"><a href="#" class="slideshow_pic"><img src="' . wp_get_attachment_image_src($item, 'full')[0] . '" alt=""></a></li>';
 //                $allimages .= '[vc_single_image image="'.$item.'" img_size="full" css=".vc_custom_'.mt_rand(10000000,  mt_getrandmax()).'{margin-bottom: 60px !important;}"]';
     }
     $content = '[vc_row][vc_column width="2/3"]' . '
@@ -111,7 +111,6 @@ if($temp){
                      <img src="' . $first_image . '" alt="">
                  </div>
                  <ul class="slideshow_list">
-                 <a href="#sleder"></a>
                  ' . $allimages . '
                  </ul>
              </div>
