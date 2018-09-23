@@ -3,50 +3,60 @@
 function get_content_portfolio()
 {
     ?>
-    <style>
-        .slideshow_display{
-            position: relative;
-            width: 500px;
-            height: 400px;
-            border: solid 1px #cccccc;
-        }
-        .slideshow_display img{
-            display: block;
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            margin: auto;
-        }
-        .slideshow_item{
-            display: inline-block;
-        }
-        .slideshow_list{
-            padding-top: 15px;
-            clear: both;
-        }
-        .slideshow_item{
-            float: left;
-            margin-left: 23px;
-            padding: 3px;
-        }
-        .slideshow_item:first-child{
-            margin-left: 0;
-        }
-        .slideshow {
-            padding: 200px;
-            width: 906px;
-        }
-        .slideshow_display img{
-            width: auto;
-            height: 250px;
-        }
-        .slideshow_list .slideshow_item img{
-            width: auto;
-            max-height: 80px;
-        }
-    </style>
+        <style>
+            .slideshow_display{
+                position: relative;
+                width: auto;
+                height: 271px;
+                border: solid 1px #cccccc;
+                overflow: hidden;
+            }
+            .slideshow_display img{
+                display: block;
+                position: absolute;
+                 top: 0;
+                 left: 0;
+                 bottom: 0;
+                 right: 0;
+                margin: auto;
+            }
+            .slideshow_item{
+                display: inline-block;
+            }
+            .slideshow_list{
+                padding-top: 15px;
+                clear: both;
+            }
+            .slideshow_item{
+                float: left;
+                margin-left: 23px;
+                padding: 3px;
+            }
+            .slideshow_item:first-child{
+                margin-left: 0;
+            }
+            .slideshow {
+                padding: 20px;
+                width: 100%;
+            }
+            .slideshow_display img{
+                width: auto;
+                height: 250px;
+            }
+            .slideshow_list .slideshow_item img{
+                width: auto;
+                max-height: 80px;
+            }
+            .btn_call-back{
+                border: none;
+                background-color: red;
+                padding: 2% 4%;
+                color: black;
+            }
+            .btn_call-back:hover{
+                background-color: #cccccc;
+            }
+        </style>
     <script>
         <?php if(!( isset($_SERVER['HTTP_X_REQUESTED_WITH']) && !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')){
             ?>document.addEventListener("DOMContentLoaded", function(event) {
@@ -104,8 +114,8 @@ if($temp){
 //                $allimages .= '[vc_single_image image="'.$item.'" img_size="full" css=".vc_custom_'.mt_rand(10000000,  mt_getrandmax()).'{margin-bottom: 60px !important;}"]';
     }
     $content = '[vc_row][vc_column width="2/3"]' . '
-<div class="wrapper">
-         <div class="container">
+<div class="wrapper" col-lg-10">
+         <div class="">
              <div class="slideshow">
                  <div class="slideshow_display">
                      <img src="' . $first_image . '" alt="">
@@ -119,7 +129,7 @@ if($temp){
             [/vc_column][vc_column width="1/3"][vc_column_text]<div class="project-info">
                     <h2>' . get_the_title() . '</h2>
                     <a href="' . get_home_url() . '/contact/?add=' . $post->ID . '">
-                        <button>Обратная связь</button>
+                        <button class="btn_call-back">Обратная связь</button>
                     </a>
                     <div class="details">
                         <div class="info-text"><span class="title">Цена</span><span class="val">' . get_field("price") . '</span></div>
