@@ -5,13 +5,17 @@
  * Date: 20.09.2018
  * Time: 21:42
  */
-// todo: хлебные крошки переименовать на русский
+// хлебные крошки
+add_filter( 'woocommerce_breadcrumb_defaults', 'jk_change_breadcrumb_home_text' );
+function jk_change_breadcrumb_home_text( $defaults ) {
+// Изменяем текст для главной страницы с 'Главная' на 'Аппартаменты'
+    $defaults['home'] = 'Главная';
+    return $defaults;
+}
 
 // стили просто так не подключаются на странице поиска
 function header_theme(){
-
     if(is_search() || is_singular( 'portfolio' )){
-        var_dump($_REQUEST);
         ?>
         <link rel="stylesheet" id="js_composer_front-css" href="<?php echo get_home_url() ?>/wp-content/uploads/js_composer/js_composer_front_custom.css?ver=5.5.2" type="text/css" media="all">
         <?php
