@@ -10,9 +10,9 @@ function footer_script()
 {
     ?>
     <script>
+        function galery_run() {
+        jQuery(function($) {
 
-        document.addEventListener("DOMContentLoaded", function(event) {
-            function galery_run() {
                 //клик по ссылкам верхнего уровня
                 $('.slideshow_pic').on('click', function (e) {
                     // запрещает дефолдное действие эл. переход по ссылке
@@ -37,11 +37,9 @@ function footer_script()
                         })
                     }
                 });
-            }
+
+        });
         }
-
-
-
     </script>
     <?php
 }
