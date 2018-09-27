@@ -8,7 +8,7 @@
 
 // стили просто так не подключаются на странице поиска
 function header_theme(){
-    if(is_search() || is_singular( 'portfolio' )){
+    if(is_search() || is_singular( 'portfolio' ) || is_home()){
         ?>
         <link rel="stylesheet" id="js_composer_front-css" href="<?php echo get_home_url() ?>/wp-content/uploads/js_composer/js_composer_front_custom.css?ver=5.5.2" type="text/css" media="all">
         <?php
