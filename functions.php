@@ -6,9 +6,48 @@
  * Time: 21:42
  */
 
+function footer_script()
+{
+    ?>
+    <script>
+        function galery_run() {
+        jQuery(function($) {
+
+                //клик по ссылкам верхнего уровня
+                $('.slideshow_pic').on('click', function (e) {
+                    // запрещает дефолдное действие эл. переход по ссылке
+                    e.preventDefault();
+                    // сохраняем переменные
+                    var $this = $(this),
+                        //сохраняем li по которой кликнули
+                        item = $this.closest('.slideshow_item'),
+                        //сохраняем контент со слайдером
+                        container = $this.closest('.slideshow'),
+                        //сохраняем блок отображения вида
+                        display = container.find('.slideshow_display'),
+                        //принцип работы слайдера берем src у img  и вставляем его в блок slideshow_display
+                        paht = item.find('img').attr('src'),
+                        // время анимации
+                        duration = 300;
+                    if (!item.hasClass('active')) {
+                        //добавили клас у актива, чтоб не нажимался анимация на одином и тодже слайде, а у остальных его убираем
+                        item.addClass('active').siblings().removeClass('active');
+                        display.find('img').fadeOut(duration, function () {
+                            $(this).attr('src', paht).fadeIn(duration);
+                        })
+                    }
+                });
+
+        });
+        }
+    </script>
+    <?php
+}
+add_action('wp_footer', 'footer_script',100);
+
 // стили просто так не подключаются на странице поиска
 function header_theme(){
-    if(is_search() || is_singular( 'portfolio' )){
+    if(is_search() || is_singular( 'portfolio' ) ){
         ?>
         <link rel="stylesheet" id="js_composer_front-css" href="<?php echo get_home_url() ?>/wp-content/uploads/js_composer/js_composer_front_custom.css?ver=5.5.2" type="text/css" media="all">
         <?php
@@ -127,26 +166,26 @@ function rename_service_labels( $labels ){
 
     $new = array(
         'name'                  => 'Каталог',
-        'singular_name'         => 'Тип',
-        'add_new'               => 'Добавить тип',
-        'add_new_item'          => 'Добавить тип',
-        'edit_item'             => 'Редактировать тип',
-        'new_item'              => 'Новый тип',
-        'view_item'             => 'Просмотреть тип',
-        'search_items'          => 'Поиск типов',
-        'not_found'             => 'Типы не найдены.',
-        'not_found_in_trash'    => 'Типы в корзине не найдены.',
+        'singular_name'         => 'Каталог',
+        'add_new'               => 'Добавить услугу',
+        'add_new_item'          => 'Добавить услугу',
+        'edit_item'             => 'Редактировать услугу',
+        'new_item'              => 'Новая услуга',
+        'view_item'             => 'Просмотреть услугу',
+        'search_items'          => 'Поиск услуг',
+        'not_found'             => 'Услуги не найдены.',
+        'not_found_in_trash'    => 'Услуги в корзине не найдены.',
         'parent_item_colon'     => '',
-        'all_items'             => 'Все типы',
-        'archives'              => 'Архивы типов',
-        'insert_into_item'      => 'Вставить в тип',
-        'uploaded_to_this_item' => 'Загруженные для этого типа',
-        'featured_image'        => 'Миниатюра типа',
-        'filter_items_list'     => 'Фильтровать список типов',
-        'items_list_navigation' => 'Навигация по списку типов',
-        'items_list'            => 'Список типов',
-        'menu_name'             => 'Типы',
-        'name_admin_bar'        => 'Тип', // пункте "добавить"
+        'all_items'             => 'Все услуги',
+        'archives'              => 'Архивы услуг',
+        'insert_into_item'      => 'Вставить в услугу',
+        'uploaded_to_this_item' => 'Загруженные для этой услуги',
+        'featured_image'        => 'Миниатюра услуги',
+        'filter_items_list'     => 'Фильтровать список услуг',
+        'items_list_navigation' => 'Навигация по списку услуг',
+        'items_list'            => 'Список услуг',
+        'menu_name'             => 'Услуги',
+        'name_admin_bar'        => 'Услуга', // пункте "добавить"
     );
 
     return (object) array_merge( (array) $labels, $new );

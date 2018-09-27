@@ -1,6 +1,10 @@
 <?php global $archi_option;?>
 <?php
-function get_content_portfolio()
+$ajax_work = false;
+if($archi_option['ajax_work']!=false && isset($_SERVER['HTTP_X_REQUESTED_WITH']) && !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'){
+    $ajax_work = true;
+}
+function get_content_portfolio($ajax_work)
 {
     ?>
         <style>
@@ -58,46 +62,19 @@ function get_content_portfolio()
             }
         </style>
     <script>
-        <?php if(!( isset($_SERVER['HTTP_X_REQUESTED_WITH']) && !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')){
-            ?>document.addEventListener("DOMContentLoaded", function(event) {
-       <?php
-                $temp = true;
-        } else{
-            $temp = false;
-        }?>
-            $(document).ready(function () {
-                //клик по ссылкам верхнего уровня
-                $('.slideshow_pic').on('click', function (e) {
-                    // запрещает дефолдное действие эл. переход по ссылке
-                    e.preventDefault();
-                    // сохраняем переменные
-                    var $this = $(this),
-                        //сохраняем li по которой кликнули
-                        item = $this.closest('.slideshow_item'),
-                        //сохраняем контент со слайдером
-                        container = $this.closest('.slideshow'),
-                        //сохраняем блок отображения вида
-                        display = container.find('.slideshow_display'),
-                        //принцип работы слайдера берем src у img  и вставляем его в блок slideshow_display
-                        paht = item.find('img').attr('src'),
-                        // время анимации
-                        duration = 300;
-                    if (!item.hasClass('active')) {
-                        //добавили клас у актива, чтоб не нажимался анимация на одином и тодже слайде, а у остальных его убираем
-                        item.addClass('active').siblings().removeClass('active');
-                        display.find('img').fadeOut(duration, function () {
-                            $(this).attr('src', paht).fadeIn(duration);
-                        })
-                    }
-                });
-            });
-       <?php
-if($temp){
-        ?>
-            });
+        <?php if( $ajax_work )
+        {
+            ?>
+            galery_run();
         <?php
-}
-        ?>
+        }else{
+            ?>
+        document.addEventListener("DOMContentLoaded", function(event) {
+            galery_run();
+        });
+            <?php
+        }
+       ?>
     </script>
 <?php
     global $post;
@@ -128,9 +105,7 @@ if($temp){
      </div>
             [/vc_column][vc_column width="1/3"][vc_column_text]<div class="project-info">
                     <h2>' . get_the_title() . '</h2>
-                    <a href="' . get_home_url() . '/contact/?add=' . $post->ID . '">
-                        <button class="btn_call-back">Обратная связь</button>
-                    </a>
+                    <a href="' . get_home_url() . '/order/?add=' . $post->ID . '" class ="btn btn-more btn-big" target="_self" >Обратная связь</a>
                     <div class="details">
                         <div class="info-text"><span class="title">Цена</span><span class="val">' . get_field("price") . '</span></div>
                         <div class="info-text"><span class="title">Размер</span><span class="val">' . get_field("size") . '</span></div>
@@ -140,11 +115,11 @@ if($temp){
     return apply_filters('the_content', $content);
 }
 ?>
-<?php if($archi_option['ajax_work']!=false && isset($_SERVER['HTTP_X_REQUESTED_WITH']) && !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'){ ?>
+<?php if( $ajax_work ){ ?>
 	<div class="container project-view">
 		<?php while (have_posts()) : the_post()?>
             <?php
-            echo get_content_portfolio();
+            echo get_content_portfolio($ajax_work);
         ?>
 		<?php endwhile; ?>
 	</div>		
@@ -215,7 +190,7 @@ if($temp){
 		<div id="content">
 			<?php if ( have_posts() ) : ?>
 				<?php while (have_posts()) : the_post(); ?>
-					<?php echo get_content_portfolio(); ?>
+					<?php echo get_content_portfolio($ajax_work); ?>
 				<?php endwhile; ?>			
 			<?php endif; ?>
 			<section class="single-portfolio-bottom">
