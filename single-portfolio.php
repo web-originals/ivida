@@ -58,7 +58,9 @@ function get_content_portfolio()
             }
         </style>
     <script>
-        galery_run();
+        document.addEventListener("DOMContentLoaded", function(event) {
+            galery_run();
+        });
     </script>
 <?php
     global $post;
