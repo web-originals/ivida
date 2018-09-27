@@ -89,7 +89,7 @@ function get_content_portfolio()
      </div>
             [/vc_column][vc_column width="1/3"][vc_column_text]<div class="project-info">
                     <h2>' . get_the_title() . '</h2>
-                    <a href="' . get_home_url() . '/contact/?add=' . $post->ID . '" class ="btn btn-more btn-big" target="_self" >Обратная связь</a>
+                    <a href="' . get_home_url() . '/order/?add=' . $post->ID . '" class ="btn btn-more btn-big" target="_self" >Обратная связь</a>
                     <div class="details">
                         <div class="info-text"><span class="title">Цена</span><span class="val">' . get_field("price") . '</span></div>
                         <div class="info-text"><span class="title">Размер</span><span class="val">' . get_field("size") . '</span></div>
