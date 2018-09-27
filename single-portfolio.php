@@ -1,6 +1,10 @@
 <?php global $archi_option;?>
 <?php
-function get_content_portfolio()
+$ajax_work = false;
+if($archi_option['ajax_work']!=false && isset($_SERVER['HTTP_X_REQUESTED_WITH']) && !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'){
+    $ajax_work = true;
+}
+function get_content_portfolio($ajax_work)
 {
     ?>
         <style>
@@ -58,9 +62,19 @@ function get_content_portfolio()
             }
         </style>
     <script>
+        <?php if( $ajax_work )
+        {
+            ?>
+            galery_run();
+        <?php
+        }else{
+            ?>
         document.addEventListener("DOMContentLoaded", function(event) {
             galery_run();
         });
+            <?php
+        }
+       ?>
     </script>
 <?php
     global $post;
@@ -103,11 +117,11 @@ function get_content_portfolio()
     return apply_filters('the_content', $content);
 }
 ?>
-<?php if($archi_option['ajax_work']!=false && isset($_SERVER['HTTP_X_REQUESTED_WITH']) && !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'){ ?>
+<?php if( $ajax_work ){ ?>
 	<div class="container project-view">
 		<?php while (have_posts()) : the_post()?>
             <?php
-            echo get_content_portfolio();
+            echo get_content_portfolio($ajax_work);
         ?>
 		<?php endwhile; ?>
 	</div>		
@@ -178,7 +192,7 @@ function get_content_portfolio()
 		<div id="content">
 			<?php if ( have_posts() ) : ?>
 				<?php while (have_posts()) : the_post(); ?>
-					<?php echo get_content_portfolio(); ?>
+					<?php echo get_content_portfolio($ajax_work); ?>
 				<?php endwhile; ?>			
 			<?php endif; ?>
 			<section class="single-portfolio-bottom">
