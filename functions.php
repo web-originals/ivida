@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: игорь
- * Date: 20.09.2018
- * Time: 21:42
- */
 
 function footer_script()
 {
@@ -95,11 +89,8 @@ function feedback_form_send() {
 wpcf7_add_form_tag('feedback_send', 'feedback_form_send');
 add_shortcode('feedback_send', 'feedback_form_send');
 
-## заменим слово "записи" на "посты" для типа записей 'post'
-//$labels = apply_filters( "post_type_labels_{$post_type}", $labels );
 add_filter('post_type_labels_portfolio', 'rename_portfolio_labels');
 function rename_portfolio_labels( $labels ){
-    // заменять автоматически нельзя: Запись = Статья, а в тексте получим "Просмотреть статья"
 
     $new = array(
         'name'                  => 'Товары',
@@ -122,7 +113,7 @@ function rename_portfolio_labels( $labels ){
         'items_list_navigation' => 'Навигация по списку товаров',
         'items_list'            => 'Список тоароа',
         'menu_name'             => 'Товары',
-        'name_admin_bar'        => 'Товар', // пункте "добавить"
+        'name_admin_bar'        => 'Товар',
     );
 
     return (object) array_merge( (array) $labels, $new );
@@ -130,7 +121,6 @@ function rename_portfolio_labels( $labels ){
 
 add_filter('post_type_labels_process', 'rename_process_labels');
 function rename_process_labels( $labels ){
-    // заменять автоматически нельзя: Запись = Статья, а в тексте получим "Просмотреть статья"
 
     $new = array(
         'name'                  => 'Процессы',
@@ -153,7 +143,7 @@ function rename_process_labels( $labels ){
         'items_list_navigation' => 'Навигация по списку процессов',
         'items_list'            => 'Список процессов',
         'menu_name'             => 'Процессы',
-        'name_admin_bar'        => 'Процесс', // пункте "добавить"
+        'name_admin_bar'        => 'Процесс',
     );
 
     return (object) array_merge( (array) $labels, $new );
@@ -162,7 +152,6 @@ function rename_process_labels( $labels ){
 
 add_filter('post_type_labels_service', 'rename_service_labels');
 function rename_service_labels( $labels ){
-    // заменять автоматически нельзя: Запись = Статья, а в тексте получим "Просмотреть статья"
 
     $new = array(
         'name'                  => 'Каталог',
@@ -185,7 +174,7 @@ function rename_service_labels( $labels ){
         'items_list_navigation' => 'Навигация по списку услуг',
         'items_list'            => 'Список услуг',
         'menu_name'             => 'Услуги',
-        'name_admin_bar'        => 'Услуга', // пункте "добавить"
+        'name_admin_bar'        => 'Услуга',
     );
 
     return (object) array_merge( (array) $labels, $new );
@@ -193,7 +182,6 @@ function rename_service_labels( $labels ){
 
 add_filter('post_type_labels_testimonial', 'rename_testimonials_labels');
 function rename_testimonials_labels( $labels ){
-    // заменять автоматически нельзя: Запись = Статья, а в тексте получим "Просмотреть статья"
 
     $new = array(
         'name'                  => 'Отзывы',
@@ -216,7 +204,7 @@ function rename_testimonials_labels( $labels ){
         'items_list_navigation' => 'Навигация по списку отзывов',
         'items_list'            => 'Список отзывов',
         'menu_name'             => 'Отзывы',
-        'name_admin_bar'        => 'Отзыв', // пункте "добавить"
+        'name_admin_bar'        => 'Отзыв',
     );
 
     return (object) array_merge( (array) $labels, $new );

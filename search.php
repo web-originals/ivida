@@ -52,7 +52,6 @@ $imgheight = (!empty($archi_option['project_image_height'])) ? $archi_option['pr
                         }else{
                             $paged = 1;
                         }
-                        //query_posts(array('post_type' => 'portfolio', 'posts_per_page' => $numbershow, 'paged' => $paged ));
                         while( have_posts() ) : the_post();
                             $cates = get_the_terms(get_the_ID(),'categories');
                             $cate_name ='';

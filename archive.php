@@ -43,7 +43,7 @@
                 <ul class="blog-list">
                     <?php 
                       while (have_posts()) : the_post();
-                      get_template_part( 'content', get_post_format() ) ;   // End the loop.
+                      get_template_part( 'content', get_post_format() ) ;
                       endwhile;
                     ?>
                 </ul>

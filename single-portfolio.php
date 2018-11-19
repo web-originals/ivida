@@ -88,7 +88,6 @@ function get_content_portfolio($ajax_work)
             $temp = '';
         }
         $allimages .= '<li class="slideshow_item ' . $temp . '"><a href="#" class="slideshow_pic"><img src="' . wp_get_attachment_image_src($item, 'full')[0] . '" alt=""></a></li>';
-//                $allimages .= '[vc_single_image image="'.$item.'" img_size="full" css=".vc_custom_'.mt_rand(10000000,  mt_getrandmax()).'{margin-bottom: 60px !important;}"]';
     }
     $content = '[vc_row][vc_column width="2/3"]' . '
 <div class="wrapper" col-lg-10">
