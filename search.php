@@ -64,36 +64,28 @@ $imgheight = (!empty($archi_option['project_image_height'])) ? $archi_option['pr
                             }
                             ?>
                             <!-- gallery item -->
-                            <div class="item <?php echo esc_attr($cate_slug); ?>">
-                                <div class="picframe-new" style="margin:<?php echo esc_attr($gap); ?>">
-                                    <a <?php if($archi_option['ajax_work']!=false){ ?>class="simple-ajax-popup-align-top"<?php } ?> href="<?php the_permalink(); ?>">
-                                        <div class="mask"></div>
-                                        <div class="pr_text">
-                                            <div class="project-name"><?php the_title(); ?></div>
-                                        </div>
+                            <div class="<?php echo esc_attr($service_col); ?> item-service item">
 
-                                        <?php if ( has_post_thumbnail() ) : ?>
-                                            <?php
-                                            if ($archi_option['crop_project_images'] != false) {
-                                                $thumbnail = get_post( get_post_thumbnail_id() );
-                                                $image_title = $thumbnail->post_title;
-                                                $image_caption = $thumbnail->post_excerpt;
-                                                $image_description = $thumbnail->post_content;
-                                                $image_alt = get_post_meta( $thumbnail->ID, '_wp_attachment_image_alt', true );
-                                                // Crop
-                                                $params = array( 'width' => $imgwidth, 'height' => $imgheight, 'crop' => true );
-                                                $image = bfi_thumb( wp_get_attachment_url(get_post_thumbnail_id()), $params );
-                                                ?>
-                                                <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($image_alt); ?>" title="<?php echo esc_attr($image_title); ?>" />
-                                                <?php
-                                            }else{
-                                                the_post_thumbnail( 'thumb-portfolio' );
-                                            }
-
-                                            ?>
-                                        <?php endif; ?>
+                                <?php if(isset($archi_option['service_img']) and $archi_option['service_img']=="imgabove"){ ?>
+                                    <a href="<?php the_permalink(); ?>" class="simple-ajax-popup-align-top">
+                                        <?php if ( has_post_thumbnail() ) { the_post_thumbnail( 'thumb-service', array( 'class' => 'img-responsive' ) ); } ?>
                                     </a>
-                                </div>
+                                    <div class="spacer-single"></div>
+                                <?php } ?>
+
+                                <h3><?php the_title(); ?></h3>
+                                <?php the_excerpt(); ?>
+
+                                <?php if(isset($archi_option['service_img']) and $archi_option['service_img']=="imgbelow"){ ?>
+                                    <div class="spacer-single-10"></div>
+                                    <a href="<?php the_permalink(); ?>" class="simple-ajax-popup-align-top">
+                                        <?php if ( has_post_thumbnail() ) { the_post_thumbnail( 'thumb-service', array( 'class' => 'img-responsive' ) ); } ?>
+                                    </a>
+                                <?php } ?>
+
+                                <div class="spacer-single"></div>
+                                <a href="<?php the_permalink(); ?>" class=" simple-ajax-popup-align-top btn-line btn-fullwidth"><?php echo htmlspecialchars_decode( do_shortcode( $archi_option['archive_service_read'] ) ); ?></a>
+
                             </div>
                             <!-- close gallery item -->
                         <?php endwhile; ?>
