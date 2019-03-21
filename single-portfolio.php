@@ -98,10 +98,10 @@ function get_content_portfolio($ajax_work)
            '.$allimages.'
         </div>
         <a class="left carousel-control" href="#carouselExampleControls" role="button" data-slide="prev">
-          <i class="fa fa-angle-left"></i>
+            <span class=fa fa-angle-left"></span>
         </a>
         <a class="right carousel-control" href="#carouselExampleControls" role="button" data-slide="next">
-           <i class="fa fa-angle-right"></i>
+           <span class="fa fa-angle-right"></span>
         </a>
     </div>
 </div>
