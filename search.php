@@ -74,7 +74,6 @@ $imgheight = (!empty($archi_option['project_image_height'])) ? $archi_option['pr
                                 <?php } ?>
 
                                 <h3><?php the_title(); ?></h3>
-                                <?php the_excerpt(); ?>
 
                                 <?php if(isset($archi_option['service_img']) and $archi_option['service_img']=="imgbelow"){ ?>
                                     <div class="spacer-single-10"></div>
