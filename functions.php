@@ -526,6 +526,7 @@ function getCatalogSearchResult()
         $paged = 1;
     }
     query_posts(array('post_type' => 'portfolio', 'posts_per_page' => $numbershow, 'paged' => $paged));
+    $temp_el = 1;
     while (have_posts()) : the_post();
         $cates = get_the_terms(get_the_ID(), 'categories');
         $cate_name = '';
@@ -536,17 +537,24 @@ function getCatalogSearchResult()
                 $cate_slug .= $cate->slug . ' ';
             }
         }
-        echo_galery_item($archi_option);
+        echo_galery_item($archi_option,$paged,$temp_el++);
     endwhile;
 
     wp_die();
 }
 
 
-function echo_galery_item($archi_option){
+function echo_galery_item($archi_option,$page = 0,$element = 1){
+    $el = $page*8+$element;
     ?>
     <!-- gallery item -->
-        <div class="<?php echo esc_attr($service_col); ?> item-service item">
+        <div class="<?php echo esc_attr($service_col); ?> item-service item"
+        <?php
+        if($page >0){
+            echo "style='position: absolute; left: ". 337*($el%4) ."px; top: ". round($el/4,0)*300 ."px;'";
+        }
+        ?>
+        >
 
             <?php if (isset($archi_option['service_img']) and $archi_option['service_img'] == "imgabove") { ?>
                 <a href="<?php the_permalink(); ?>" class="simple-ajax-popup-align-top">
