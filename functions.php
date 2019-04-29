@@ -39,6 +39,54 @@ function footer_script()
 }
 add_action('wp_footer', 'footer_script',100);
 
+function ajaxSearchScript(){
+    ?>
+    <div id="endsearch" ></div>
+    <script>
+
+        jQuery(function ($) {
+            setScroll();
+            var page = 1;
+
+            function drawResult() {
+                $.get(
+                    "http://localhost/mebel/wp-admin/admin-ajax.php",
+                    {
+                        action: "catalogsearch",
+                        page: page
+                    },
+                    onAjaxSuccess
+                );
+
+                function onAjaxSuccess(data)
+                {
+                    // console.log(data);
+                    if(data.length > 0){
+                        $('#endsearch').replaceWith(data+"<div id=\"endsearch\" ></div>");
+                        page++;
+                        setScroll();
+                    }
+                }
+            }
+
+            function setScroll() {
+                var scroll_block = $('#endsearch').offset().top - 100;
+                console.log(scroll_block);
+                $(window).scroll(function () {
+                    if ($(window).scrollTop() > scroll_block) {
+                        // создаем эффекты и анимацию
+                        drawResult();
+                        console.log(122221111);
+                        $(window).off('scroll');
+                    }
+                });
+            }
+        });
+
+    </script>
+    <?php
+}
+
 // стили просто так не подключаются на странице поиска
 function header_theme(){
     if(is_search() || is_singular( 'portfolio' ) ){
@@ -458,3 +506,73 @@ endif;
 
         }
     }
+
+if (wp_doing_ajax()) {
+    add_action('wp_ajax_catalogsearch', 'getCatalogSearchResult');
+    add_action('wp_ajax_nopriv_catalogsearch', 'getCatalogSearchResult');
+}
+
+function getCatalogSearchResult()
+{
+    global $archi_option;
+    $showall = (!empty($archi_option['portfolio_text_all'])) ? $archi_option['portfolio_text_all'] : 'All Project';
+    $numbershow = (!empty($archi_option['portfolio_show'])) ? $archi_option['portfolio_show'] : 8;
+    $gap = (!empty($archi_option['projects_item_gap']) ? $archi_option['projects_item_gap'] . 'px' : '0px');
+    $imgwidth = (!empty($archi_option['project_image_width'])) ? $archi_option['project_image_width'] : 700;
+    $imgheight = (!empty($archi_option['project_image_height'])) ? $archi_option['project_image_height'] : 466;
+    if (intval( $_GET['page'])) {
+        $paged = intval( $_GET['page'] );
+    } else {
+        $paged = 1;
+    }
+    query_posts(array('post_type' => 'portfolio', 'posts_per_page' => $numbershow, 'paged' => $paged));
+    while (have_posts()) : the_post();
+        $cates = get_the_terms(get_the_ID(), 'categories');
+        $cate_name = '';
+        $cate_slug = '';
+        foreach ((array)$cates as $cate) {
+            if (count($cates) > 0) {
+                $cate_name .= $cate->name . '<span>, </span> ';
+                $cate_slug .= $cate->slug . ' ';
+            }
+        }
+        echo_galery_item($archi_option);
+    endwhile;
+
+    wp_die();
+}
+
+
+function echo_galery_item($archi_option){
+    ?>
+    <!-- gallery item -->
+        <div class="<?php echo esc_attr($service_col); ?> item-service item">
+
+            <?php if (isset($archi_option['service_img']) and $archi_option['service_img'] == "imgabove") { ?>
+                <a href="<?php the_permalink(); ?>" class="simple-ajax-popup-align-top">
+                    <?php if (has_post_thumbnail()) {
+                        the_post_thumbnail('thumb-service', array('class' => 'img-responsive'));
+                    } ?>
+                </a>
+                <div class="spacer-single"></div>
+            <?php } ?>
+
+            <h3><?php the_title(); ?></h3>
+
+            <?php if (isset($archi_option['service_img']) and $archi_option['service_img'] == "imgbelow") { ?>
+                <div class="spacer-single-10"></div>
+                <a href="<?php the_permalink(); ?>" class="simple-ajax-popup-align-top">
+                    <?php if (has_post_thumbnail()) {
+                        the_post_thumbnail('thumb-service', array('class' => 'img-responsive'));
+                    } ?>
+                </a>
+            <?php } ?>
+
+            <div class="spacer-single"></div>
+            <a href="<?php the_permalink(); ?>"
+               class=" simple-ajax-popup-align-top btn-line btn-fullwidth"><?php echo htmlspecialchars_decode(do_shortcode($archi_option['archive_service_read'])); ?></a>
+
+        </div>
+        <!-- close gallery item -->
+<?php
+}
