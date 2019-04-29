@@ -50,7 +50,7 @@ function ajaxSearchScript(){
 
             function drawResult() {
                 $.get(
-                    "http://localhost/mebel/wp-admin/admin-ajax.php",
+                    "<?php echo admin_url('admin-ajax.php') ?>",
                     {
                         action: "catalogsearch",
                         page: page
