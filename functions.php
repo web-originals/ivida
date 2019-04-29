@@ -448,11 +448,11 @@ endif;
             } elseif ( is_404() ) {
                 echo htmlspecialchars_decode( $before ) . $text['404'] . $after;
             }
-
-            if ( get_query_var('paged') ) {
-                if ( is_category() || is_day() || is_month() || is_year() || is_search() || is_tag() || is_author() );
-                if ( is_category() || is_day() || is_month() || is_year() || is_search() || is_tag() || is_author() ) echo ')';
-            }
+//            непнятно для чего 2 условия но работают местами неправильно
+//            if ( get_query_var('paged') ) {
+//                if ( is_category() || is_day() || is_month() || is_year() || is_search() || is_tag() || is_author() );
+//                if ( is_category() || is_day() || is_month() || is_year() || is_search() || is_tag() || is_author() ) echo ')';
+//            }
 
             echo '</ul>';
 
