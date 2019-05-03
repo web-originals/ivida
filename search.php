@@ -43,7 +43,7 @@ $imgheight = (!empty($archi_option['project_image_height'])) ? $archi_option['pr
     </div>
                 <?php if(have_posts()) : ?>
 
-                    <div id="gallery" class="gallery full-gallery de-gallery pf_full_width <?php if ($archi_option['portfolio_columns'] == 2) {echo 'pf_2_cols'; }elseif ($archi_option['portfolio_columns'] == 3) { echo 'pf_3_cols'; }elseif ($archi_option['portfolio_columns'] == 5) { echo 'pf_5_cols'; }elseif ($archi_option['portfolio_columns'] == 6) { echo 'pf_6_cols'; }else{} ?> wow fadeInUp" data-wow-delay=".3s" style="margin:0px <?php echo esc_attr($gap); ?>" >
+                    <div class="container">
                         <?php
                         if ( get_query_var('paged') ){
                             $paged = get_query_var('paged');

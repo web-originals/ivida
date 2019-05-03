@@ -60,11 +60,30 @@ function ajaxSearchScript(){
 
                 function onAjaxSuccess(data)
                 {
-                    // console.log(data);
                     if(data.length > 0){
-                        $('#endsearch').replaceWith(data+"<div id=\"endsearch\" ></div>");
+                        $('#endsearch').replaceWith(data + "<div id=\"endsearch\" ></div>");
+                        /* --------------------------------------------------
+	                     * magnificPopup
+	                     * --------------------------------------------------*/
+
+                        $('.simple-ajax-popup-align-top').magnificPopup({
+                            type: 'ajax',
+                            alignTop: true,
+                            overflowY: 'scroll',
+                            fixedContentPos: true,
+                            callbacks: {
+                                beforeOpen: function () {
+                                    jQuery('html').addClass('mfp-helper');
+                                },
+                                close: function () {
+                                    jQuery('html').removeClass('mfp-helper');
+                                }
+                            },
+                            gallery: {
+                                enabled: true
+                            }
+                        });
                         page++;
-                        $(document).load();
                         setScroll();
                     }
                 }
@@ -77,7 +96,6 @@ function ajaxSearchScript(){
                     if ($(window).scrollTop() > scroll_block) {
                         // создаем эффекты и анимацию
                         drawResult();
-                        console.log(122221111);
                         $(window).off('scroll');
                     }
                 });
@@ -547,33 +565,18 @@ function getCatalogSearchResult()
 function echo_galery_item($archi_option){
     ?>
     <!-- gallery item -->
-        <div class="<?php echo esc_attr($service_col); ?> item-service item">
-
-            <?php if (isset($archi_option['service_img']) and $archi_option['service_img'] == "imgabove") { ?>
-                <a href="<?php the_permalink(); ?>" class="simple-ajax-popup-align-top">
-                    <?php if (has_post_thumbnail()) {
-                        the_post_thumbnail('thumb-service', array('class' => 'img-responsive'));
-                    } ?>
-                </a>
-                <div class="spacer-single"></div>
-            <?php } ?>
-
-            <h3><?php the_title(); ?></h3>
-
-            <?php if (isset($archi_option['service_img']) and $archi_option['service_img'] == "imgbelow") { ?>
-                <div class="spacer-single-10"></div>
-                <a href="<?php the_permalink(); ?>" class="simple-ajax-popup-align-top">
-                    <?php if (has_post_thumbnail()) {
-                        the_post_thumbnail('thumb-service', array('class' => 'img-responsive'));
-                    } ?>
-                </a>
-            <?php } ?>
-
-            <div class="spacer-single"></div>
-            <a href="<?php the_permalink(); ?>"
-               class=" simple-ajax-popup-align-top btn-line btn-fullwidth"><?php echo htmlspecialchars_decode(do_shortcode($archi_option['archive_service_read'])); ?></a>
-
+    <div class="col-md-4 co;-lg-3 block_stock">
+        <h3 class="block_stock__titele"><?php the_title(); ?></h3>
+        <div class="block_stock__img">
+            <?php if (has_post_thumbnail()) {
+                the_post_thumbnail('thumb-service', array('class' => 'img-responsive'));
+            } ?>
         </div>
-        <!-- close gallery item -->
-<?php
+
+        <a href="<?php the_permalink(); ?>"
+           class=" simple-ajax-popup-align-top btn-line btn-fullwidth">Подробнее</a>
+    </div>
+
+    <!-- close gallery item -->
+    <?php
 }
