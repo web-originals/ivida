@@ -53,7 +53,8 @@ function ajaxSearchScript(){
                     "<?php echo admin_url('admin-ajax.php') ?>",
                     {
                         action: "catalogsearch",
-                        page: page
+                        page: page,
+                        s: $('#s').val()
                     },
                     onAjaxSuccess
                 );
