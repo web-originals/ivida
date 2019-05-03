@@ -544,7 +544,7 @@ function getCatalogSearchResult()
     } else {
         $paged = 1;
     }
-    query_posts(array('post_type' => 'portfolio', 'posts_per_page' => $numbershow, 'paged' => $paged));
+    query_posts(array('post_type' => 'portfolio','categories'=>'stock' ,'posts_per_page' => $numbershow, 'paged' => $paged));
     while (have_posts()) : the_post();
         $cates = get_the_terms(get_the_ID(), 'categories');
         $cate_name = '';
