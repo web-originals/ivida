@@ -581,3 +581,27 @@ function echo_galery_item($archi_option){
     <!-- close gallery item -->
     <?php
 }
+
+add_filter('esc_html', 'my_change_choose_an_option_text_func', 10, 2);
+
+function my_change_choose_an_option_text_func($args){
+    switch ($args){
+        case 'Leave a reply':
+            return 'Оставить отзыв';
+            break;
+        case 'Name *':
+            return 'Имя *';
+            break;
+        case 'Email *':
+            return 'Электронная почта *';
+            break;
+        case 'Comment *':
+            return 'Комментарий *';
+            break;
+        case 'Send Message':
+            return 'Отправить';
+            break;
+        default:
+            return $args;
+    }
+}
