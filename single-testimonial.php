@@ -14,7 +14,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h1><?php the_title(); ?></h1>
+                    <h1>Отзывы</h1>
                     <?php
                     if(function_exists('archi_breadcrumbs')):
                         archi_breadcrumbs();
@@ -43,7 +43,7 @@
                     <?php if (have_posts()){ ?>
                         <div id="post-<?php the_ID(); ?>" <?php post_class('page-content'); ?>>
                             <?php while (have_posts()) : the_post()?>
-                                <h2>Отзывы</h2>
+                                <h2><?php the_title(); ?></h2>
                                 <?php the_post_thumbnail() ?>
                                 <?php the_content(); ?>
                                 <?php
