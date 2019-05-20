@@ -43,7 +43,7 @@ $imgheight = (!empty($archi_option['project_image_height'])) ? $archi_option['pr
     </div>
                 <?php if(have_posts()) : ?>
 
-                    <div id="gallery" class="gallery full-gallery de-gallery pf_full_width <?php if ($archi_option['portfolio_columns'] == 2) {echo 'pf_2_cols'; }elseif ($archi_option['portfolio_columns'] == 3) { echo 'pf_3_cols'; }elseif ($archi_option['portfolio_columns'] == 5) { echo 'pf_5_cols'; }elseif ($archi_option['portfolio_columns'] == 6) { echo 'pf_6_cols'; }else{} ?> wow fadeInUp" data-wow-delay=".3s" style="margin:0px <?php echo esc_attr($gap); ?>" >
+                    <div class="container">
                         <?php
                         if ( get_query_var('paged') ){
                             $paged = get_query_var('paged');
@@ -62,43 +62,22 @@ $imgheight = (!empty($archi_option['project_image_height'])) ? $archi_option['pr
                                     $cate_slug .= $cate->slug .' ';
                                 }
                             }
+
+                            echo_galery_item($archi_option);
+
                             ?>
-                            <!-- gallery item -->
-                            <div class="<?php echo esc_attr($service_col); ?> item-service item">
-
-                                <?php if(isset($archi_option['service_img']) and $archi_option['service_img']=="imgabove"){ ?>
-                                    <a href="<?php the_permalink(); ?>" class="simple-ajax-popup-align-top">
-                                        <?php if ( has_post_thumbnail() ) { the_post_thumbnail( 'thumb-service', array( 'class' => 'img-responsive' ) ); } ?>
-                                    </a>
-                                    <div class="spacer-single"></div>
-                                <?php } ?>
-
-                                <h3><?php the_title(); ?></h3>
-                                <?php the_excerpt(); ?>
-
-                                <?php if(isset($archi_option['service_img']) and $archi_option['service_img']=="imgbelow"){ ?>
-                                    <div class="spacer-single-10"></div>
-                                    <a href="<?php the_permalink(); ?>" class="simple-ajax-popup-align-top">
-                                        <?php if ( has_post_thumbnail() ) { the_post_thumbnail( 'thumb-service', array( 'class' => 'img-responsive' ) ); } ?>
-                                    </a>
-                                <?php } ?>
-
-                                <div class="spacer-single"></div>
-                                <a href="<?php the_permalink(); ?>" class=" simple-ajax-popup-align-top btn-line btn-fullwidth"><?php echo htmlspecialchars_decode( do_shortcode( $archi_option['archive_service_read'] ) ); ?></a>
-
-                            </div>
-                            <!-- close gallery item -->
                         <?php endwhile; ?>
+                        <?php ajaxSearchScript();?>
                     </div>
                 <?php else: ?>
                     <h1><?php esc_html_e('Ничего не найдено!', 'archi'); ?></h1>
                 <?php endif; ?> 
 
-                <div class="text-center">
-                    <ul class="pagination">
-                        <?php echo archi_pagination(); ?>
-                    </ul>
-                </div>
+<!--                <div class="text-center">-->
+<!--                    <ul class="pagination">-->
+<!--                        --><?php //echo archi_pagination(); ?>
+<!--                    </ul>-->
+<!--                </div>-->
             <?php if(isset($archi_option['blog-layout']) and $archi_option['blog-layout'] == 3 ){ ?>
                 <div class="<?php echo 'col-md-'.esc_attr($archi_option['blog_col_right']); ?>">
                   <?php get_sidebar();?>
