@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: игорь
- * Date: 20.09.2018
- * Time: 21:42
- */
 
 function footer_script()
 {
@@ -44,6 +38,74 @@ function footer_script()
     <?php
 }
 add_action('wp_footer', 'footer_script',100);
+
+function ajaxSearchScript(){
+    ?>
+    <div id="endsearch" ></div>
+    <script>
+
+        jQuery(function ($) {
+            setScroll();
+            var page = 2;
+
+            function drawResult() {
+                $.get(
+                    "<?php echo admin_url('admin-ajax.php') ?>",
+                    {
+                        action: "catalogsearch",
+                        page: page,
+                        s: $('#s').val()
+                    },
+                    onAjaxSuccess
+                );
+
+                function onAjaxSuccess(data)
+                {
+                    if(data.length > 0){
+                        $('#endsearch').replaceWith(data + "<div id=\"endsearch\" ></div>");
+                        /* --------------------------------------------------
+	                     * magnificPopup
+	                     * --------------------------------------------------*/
+
+                        $('.simple-ajax-popup-align-top').magnificPopup({
+                            type: 'ajax',
+                            alignTop: true,
+                            overflowY: 'scroll',
+                            fixedContentPos: true,
+                            callbacks: {
+                                beforeOpen: function () {
+                                    jQuery('html').addClass('mfp-helper');
+                                },
+                                close: function () {
+                                    jQuery('html').removeClass('mfp-helper');
+                                }
+                            },
+                            gallery: {
+                                enabled: true
+                            }
+                        });
+                        page++;
+                        setScroll();
+                    }
+                }
+            }
+
+            function setScroll() {
+                var scroll_block = $('#endsearch').offset().top - 100;
+                console.log(scroll_block);
+                $(window).scroll(function () {
+                    if ($(window).scrollTop() > scroll_block) {
+                        // создаем эффекты и анимацию
+                        drawResult();
+                        $(window).off('scroll');
+                    }
+                });
+            }
+        });
+
+    </script>
+    <?php
+}
 
 // стили просто так не подключаются на странице поиска
 function header_theme(){
@@ -95,11 +157,8 @@ function feedback_form_send() {
 wpcf7_add_form_tag('feedback_send', 'feedback_form_send');
 add_shortcode('feedback_send', 'feedback_form_send');
 
-## заменим слово "записи" на "посты" для типа записей 'post'
-//$labels = apply_filters( "post_type_labels_{$post_type}", $labels );
 add_filter('post_type_labels_portfolio', 'rename_portfolio_labels');
 function rename_portfolio_labels( $labels ){
-    // заменять автоматически нельзя: Запись = Статья, а в тексте получим "Просмотреть статья"
 
     $new = array(
         'name'                  => 'Товары',
@@ -122,7 +181,7 @@ function rename_portfolio_labels( $labels ){
         'items_list_navigation' => 'Навигация по списку товаров',
         'items_list'            => 'Список тоароа',
         'menu_name'             => 'Товары',
-        'name_admin_bar'        => 'Товар', // пункте "добавить"
+        'name_admin_bar'        => 'Товар',
     );
 
     return (object) array_merge( (array) $labels, $new );
@@ -130,7 +189,6 @@ function rename_portfolio_labels( $labels ){
 
 add_filter('post_type_labels_process', 'rename_process_labels');
 function rename_process_labels( $labels ){
-    // заменять автоматически нельзя: Запись = Статья, а в тексте получим "Просмотреть статья"
 
     $new = array(
         'name'                  => 'Процессы',
@@ -153,7 +211,7 @@ function rename_process_labels( $labels ){
         'items_list_navigation' => 'Навигация по списку процессов',
         'items_list'            => 'Список процессов',
         'menu_name'             => 'Процессы',
-        'name_admin_bar'        => 'Процесс', // пункте "добавить"
+        'name_admin_bar'        => 'Процесс',
     );
 
     return (object) array_merge( (array) $labels, $new );
@@ -162,30 +220,29 @@ function rename_process_labels( $labels ){
 
 add_filter('post_type_labels_service', 'rename_service_labels');
 function rename_service_labels( $labels ){
-    // заменять автоматически нельзя: Запись = Статья, а в тексте получим "Просмотреть статья"
 
     $new = array(
-        'name'                  => 'Каталог',
-        'singular_name'         => 'Каталог',
-        'add_new'               => 'Добавить услугу',
-        'add_new_item'          => 'Добавить услугу',
-        'edit_item'             => 'Редактировать услугу',
-        'new_item'              => 'Новая услуга',
-        'view_item'             => 'Просмотреть услугу',
-        'search_items'          => 'Поиск услуг',
-        'not_found'             => 'Услуги не найдены.',
-        'not_found_in_trash'    => 'Услуги в корзине не найдены.',
+        'name'                  => 'Продукция',
+        'singular_name'         => 'Продукция',
+        'add_new'               => 'Добавить продукцию.',
+        'add_new_item'          => 'Добавить продукцию',
+        'edit_item'             => 'Редактировать продукцию',
+        'new_item'              => 'Новая продукция',
+        'view_item'             => 'Просмотреть продукцию',
+        'search_items'          => 'Поиск продукции',
+        'not_found'             => 'Продукция не найдены.',
+        'not_found_in_trash'    => 'Продукция в корзине не найдены.',
         'parent_item_colon'     => '',
-        'all_items'             => 'Все услуги',
-        'archives'              => 'Архивы услуг',
-        'insert_into_item'      => 'Вставить в услугу',
-        'uploaded_to_this_item' => 'Загруженные для этой услуги',
-        'featured_image'        => 'Миниатюра услуги',
-        'filter_items_list'     => 'Фильтровать список услуг',
-        'items_list_navigation' => 'Навигация по списку услуг',
-        'items_list'            => 'Список услуг',
-        'menu_name'             => 'Услуги',
-        'name_admin_bar'        => 'Услуга', // пункте "добавить"
+        'all_items'             => 'Все продукции',
+        'archives'              => 'Архивы продукции',
+        'insert_into_item'      => 'Вставить в продукцию',
+        'uploaded_to_this_item' => 'Загруженные для этой продукции',
+        'featured_image'        => 'Миниатюра продукции',
+        'filter_items_list'     => 'Фильтровать список продукции',
+        'items_list_navigation' => 'Навигация по списку продукции',
+        'items_list'            => 'Список продукции',
+        'menu_name'             => 'Продукция',
+        'name_admin_bar'        => 'Продукция',
     );
 
     return (object) array_merge( (array) $labels, $new );
@@ -193,7 +250,6 @@ function rename_service_labels( $labels ){
 
 add_filter('post_type_labels_testimonial', 'rename_testimonials_labels');
 function rename_testimonials_labels( $labels ){
-    // заменять автоматически нельзя: Запись = Статья, а в тексте получим "Просмотреть статья"
 
     $new = array(
         'name'                  => 'Отзывы',
@@ -216,7 +272,7 @@ function rename_testimonials_labels( $labels ){
         'items_list_navigation' => 'Навигация по списку отзывов',
         'items_list'            => 'Список отзывов',
         'menu_name'             => 'Отзывы',
-        'name_admin_bar'        => 'Отзыв', // пункте "добавить"
+        'name_admin_bar'        => 'Отзыв',
     );
 
     return (object) array_merge( (array) $labels, $new );
@@ -460,13 +516,92 @@ endif;
             } elseif ( is_404() ) {
                 echo htmlspecialchars_decode( $before ) . $text['404'] . $after;
             }
-
-            if ( get_query_var('paged') ) {
-                if ( is_category() || is_day() || is_month() || is_year() || is_search() || is_tag() || is_author() );
-                if ( is_category() || is_day() || is_month() || is_year() || is_search() || is_tag() || is_author() ) echo ')';
-            }
+//            непнятно для чего 2 условия но работают местами неправильно
+//            if ( get_query_var('paged') ) {
+//                if ( is_category() || is_day() || is_month() || is_year() || is_search() || is_tag() || is_author() );
+//                if ( is_category() || is_day() || is_month() || is_year() || is_search() || is_tag() || is_author() ) echo ')';
+//            }
 
             echo '</ul>';
 
         }
     }
+
+if (wp_doing_ajax()) {
+    add_action('wp_ajax_catalogsearch', 'getCatalogSearchResult');
+    add_action('wp_ajax_nopriv_catalogsearch', 'getCatalogSearchResult');
+}
+
+function getCatalogSearchResult()
+{
+    global $archi_option;
+    $showall = (!empty($archi_option['portfolio_text_all'])) ? $archi_option['portfolio_text_all'] : 'All Project';
+    $numbershow = (!empty($archi_option['portfolio_show'])) ? $archi_option['portfolio_show'] : 8;
+    $gap = (!empty($archi_option['projects_item_gap']) ? $archi_option['projects_item_gap'] . 'px' : '0px');
+    $imgwidth = (!empty($archi_option['project_image_width'])) ? $archi_option['project_image_width'] : 700;
+    $imgheight = (!empty($archi_option['project_image_height'])) ? $archi_option['project_image_height'] : 466;
+    if (intval( $_GET['page'])) {
+        $paged = intval( $_GET['page'] );
+    } else {
+        $paged = 1;
+    }
+    query_posts(array('post_type' => 'portfolio','s'=>esc_sql($_GET['s']),'categories'=>'stock' ,'posts_per_page' => $numbershow, 'paged' => $paged));
+    while (have_posts()) : the_post();
+        $cates = get_the_terms(get_the_ID(), 'categories');
+        $cate_name = '';
+        $cate_slug = '';
+        foreach ((array)$cates as $cate) {
+            if (count($cates) > 0) {
+                $cate_name .= $cate->name . '<span>, </span> ';
+                $cate_slug .= $cate->slug . ' ';
+            }
+        }
+        echo_galery_item($archi_option);
+    endwhile;
+
+    wp_die();
+}
+
+
+function echo_galery_item($archi_option){
+    ?>
+    <!-- gallery item -->
+    <div class="col-md-4 co;-lg-3 block_stock">
+        <h3 class="block_stock__titele"><?php the_title(); ?></h3>
+        <div class="block_stock__img">
+            <?php if (has_post_thumbnail()) {
+                the_post_thumbnail('thumb-service', array('class' => 'img-responsive'));
+            } ?>
+        </div>
+
+        <a href="<?php the_permalink(); ?>"
+           class=" simple-ajax-popup-align-top btn-line btn-fullwidth">Подробнее</a>
+    </div>
+
+    <!-- close gallery item -->
+    <?php
+}
+
+add_filter('esc_html', 'my_change_choose_an_option_text_func', 10, 2);
+
+function my_change_choose_an_option_text_func($args){
+    switch ($args){
+        case 'Leave a reply':
+            return 'Оставить отзыв';
+            break;
+        case 'Name *':
+            return 'Имя *';
+            break;
+        case 'Email *':
+            return 'Электронная почта *';
+            break;
+        case 'Comment *':
+            return 'Комментарий *';
+            break;
+        case 'Send Message':
+            return 'Отправить';
+            break;
+        default:
+            return $args;
+    }
+}

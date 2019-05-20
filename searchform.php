@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: игорь
- * Date: 20.09.2018
- * Time: 23:40
- */
 ?>
 
 <form role="search" method="get" id="searchform" action="<?php echo home_url( '/' ) ?>" >

@@ -79,33 +79,35 @@ function get_content_portfolio($ajax_work)
 <?php
     global $post;
     $allimages = '';
-    $first_image = '';
+//    $first_image = '';
     foreach (explode(',', get_field("images")) as $key => $item) {
         if ($key == 0) {
-            $first_image = wp_get_attachment_image_src($item, 'full')[0];
+//            $first_image = wp_get_attachment_image_src($item, 'full')[0];
             $temp = 'active';
         } else {
             $temp = '';
         }
-        $allimages .= '<li class="slideshow_item ' . $temp . '"><a href="#" class="slideshow_pic"><img src="' . wp_get_attachment_image_src($item, 'full')[0] . '" alt=""></a></li>';
-//                $allimages .= '[vc_single_image image="'.$item.'" img_size="full" css=".vc_custom_'.mt_rand(10000000,  mt_getrandmax()).'{margin-bottom: 60px !important;}"]';
+//        $allimages .= '<li class="slideshow_item ' . $temp . '"><a href="#" class="slideshow_pic"><img src="' . wp_get_attachment_image_src($item, 'full')[0] . '" alt=""></a></li>';
+        $allimages .= '<div class="item ' . $temp . '"><img class="d-block w-100" src="' . wp_get_attachment_image_src($item, 'full')[0] . '" alt=""></div>';
     }
+
     $content = '[vc_row][vc_column width="2/3"]' . '
 <div class="wrapper" col-lg-10">
-         <div class="">
-             <div class="slideshow">
-                 <div class="slideshow_display">
-                     <img src="' . $first_image . '" alt="">
-                 </div>
-                 <ul class="slideshow_list">
-                 ' . $allimages . '
-                 </ul>
-             </div>
-         </div>
-     </div>
+     <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+           '.$allimages.'
+        </div>
+        <a class="left carousel-control" href="#carouselExampleControls" role="button" data-slide="prev">
+           <i class="fa fa-angle-left"></i>
+        </a>
+        <a class="right carousel-control" href="#carouselExampleControls" role="button" data-slide="next">
+          <i class="fa fa-angle-right"></i>
+        </a>
+    </div>
+</div>
             [/vc_column][vc_column width="1/3"][vc_column_text]<div class="project-info">
                     <h2>' . get_the_title() . '</h2>
-                    <a href="' . get_home_url() . '/order/?add=' . $post->ID . '" class ="btn btn-more btn-big" target="_self" >Обратная связь</a>
+                    
                     ';
     if(!empty(get_field("price")) || !empty(get_field("size")) || !empty(get_field("weight"))){
         $content.= '<div class="details">';
@@ -119,6 +121,7 @@ function get_content_portfolio($ajax_work)
         $content.=   '</div>';
     }
     $content.= get_the_content() . '
+                <a href="' . get_home_url() . '/order/?add=' . $post->ID . '" class ="btn btn-more btn-big" target="_self" >Обратная связь</a>
                 </div>[/vc_column_text][/vc_column][/vc_row]';
     return apply_filters('the_content', $content);
 }
