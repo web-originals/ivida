@@ -1,15 +1,115 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: игорь
- * Date: 20.09.2018
- * Time: 21:42
- */
 
+function footer_script()
+{
+    ?>
+    <script>
+        function galery_run() {
+        jQuery(function($) {
+
+                //клик по ссылкам верхнего уровня
+                $('.slideshow_pic').on('click', function (e) {
+                    // запрещает дефолдное действие эл. переход по ссылке
+                    e.preventDefault();
+                    // сохраняем переменные
+                    var $this = $(this),
+                        //сохраняем li по которой кликнули
+                        item = $this.closest('.slideshow_item'),
+                        //сохраняем контент со слайдером
+                        container = $this.closest('.slideshow'),
+                        //сохраняем блок отображения вида
+                        display = container.find('.slideshow_display'),
+                        //принцип работы слайдера берем src у img  и вставляем его в блок slideshow_display
+                        paht = item.find('img').attr('src'),
+                        // время анимации
+                        duration = 300;
+                    if (!item.hasClass('active')) {
+                        //добавили клас у актива, чтоб не нажимался анимация на одином и тодже слайде, а у остальных его убираем
+                        item.addClass('active').siblings().removeClass('active');
+                        display.find('img').fadeOut(duration, function () {
+                            $(this).attr('src', paht).fadeIn(duration);
+                        })
+                    }
+                });
+
+        });
+        }
+    </script>
+    <?php
+}
+add_action('wp_footer', 'footer_script',100);
+
+function ajaxSearchScript(){
+    ?>
+    <div id="endsearch" ></div>
+    <script>
+
+        jQuery(function ($) {
+            setScroll();
+            var page = 2;
+
+            function drawResult() {
+                $.get(
+                    "<?php echo admin_url('admin-ajax.php') ?>",
+                    {
+                        action: "catalogsearch",
+                        page: page,
+                        s: $('#s').val()
+                    },
+                    onAjaxSuccess
+                );
+
+                function onAjaxSuccess(data)
+                {
+                    if(data.length > 0){
+                        $('#endsearch').replaceWith(data + "<div id=\"endsearch\" ></div>");
+                        /* --------------------------------------------------
+	                     * magnificPopup
+	                     * --------------------------------------------------*/
+
+                        $('.simple-ajax-popup-align-top').magnificPopup({
+                            type: 'ajax',
+                            alignTop: true,
+                            overflowY: 'scroll',
+                            fixedContentPos: true,
+                            callbacks: {
+                                beforeOpen: function () {
+                                    jQuery('html').addClass('mfp-helper');
+                                },
+                                close: function () {
+                                    jQuery('html').removeClass('mfp-helper');
+                                }
+                            },
+                            gallery: {
+                                enabled: true
+                            }
+                        });
+                        page++;
+                        setScroll();
+                    }
+                }
+            }
+
+            function setScroll() {
+                var scroll_block = $('#endsearch').offset().top - 100;
+                console.log(scroll_block);
+                $(window).scroll(function () {
+                    if ($(window).scrollTop() > scroll_block) {
+                        // создаем эффекты и анимацию
+                        drawResult();
+                        $(window).off('scroll');
+                    }
+                });
+            }
+        });
+
+    </script>
+    <?php
+}
 
 // стили просто так не подключаются на странице поиска
 function header_theme(){
-    if(is_search()){
+    if(is_search() || is_singular( 'portfolio' ) ){
         ?>
         <link rel="stylesheet" id="js_composer_front-css" href="<?php echo get_home_url() ?>/wp-content/uploads/js_composer/js_composer_front_custom.css?ver=5.5.2" type="text/css" media="all">
         <?php
@@ -38,11 +138,27 @@ function edit_admin_menus() {
 add_action( 'admin_menu', 'edit_admin_menus' );
 
 
-## заменим слово "записи" на "посты" для типа записей 'post'
-//$labels = apply_filters( "post_type_labels_{$post_type}", $labels );
+// contact form 7 прикрепление записи с кнопки обратная связь [feedback-button-click]
+function feedback_form() {
+    if(isset($_REQUEST['add'])){
+        $thumbnail_attributes = wp_get_attachment_image_src( get_post_thumbnail_id($_REQUEST['add']), 'medium' );
+        return '<a href="'.get_permalink($_REQUEST['add']).'"><div class="feedback-post"><p>'.get_the_title($_REQUEST['add']).'</p><img  src ="'.$thumbnail_attributes[0].'"></div></a>';
+    }
+    else {
+        return "";
+    }
+}
+wpcf7_add_form_tag('feedback', 'feedback_form');
+
+
+function feedback_form_send() {
+    return get_permalink($_REQUEST['add']);
+}
+wpcf7_add_form_tag('feedback_send', 'feedback_form_send');
+add_shortcode('feedback_send', 'feedback_form_send');
+
 add_filter('post_type_labels_portfolio', 'rename_portfolio_labels');
 function rename_portfolio_labels( $labels ){
-    // заменять автоматически нельзя: Запись = Статья, а в тексте получим "Просмотреть статья"
 
     $new = array(
         'name'                  => 'Товары',
@@ -65,7 +181,7 @@ function rename_portfolio_labels( $labels ){
         'items_list_navigation' => 'Навигация по списку товаров',
         'items_list'            => 'Список тоароа',
         'menu_name'             => 'Товары',
-        'name_admin_bar'        => 'Товар', // пункте "добавить"
+        'name_admin_bar'        => 'Товар',
     );
 
     return (object) array_merge( (array) $labels, $new );
@@ -73,7 +189,6 @@ function rename_portfolio_labels( $labels ){
 
 add_filter('post_type_labels_process', 'rename_process_labels');
 function rename_process_labels( $labels ){
-    // заменять автоматически нельзя: Запись = Статья, а в тексте получим "Просмотреть статья"
 
     $new = array(
         'name'                  => 'Процессы',
@@ -96,7 +211,7 @@ function rename_process_labels( $labels ){
         'items_list_navigation' => 'Навигация по списку процессов',
         'items_list'            => 'Список процессов',
         'menu_name'             => 'Процессы',
-        'name_admin_bar'        => 'Процесс', // пункте "добавить"
+        'name_admin_bar'        => 'Процесс',
     );
 
     return (object) array_merge( (array) $labels, $new );
@@ -105,30 +220,29 @@ function rename_process_labels( $labels ){
 
 add_filter('post_type_labels_service', 'rename_service_labels');
 function rename_service_labels( $labels ){
-    // заменять автоматически нельзя: Запись = Статья, а в тексте получим "Просмотреть статья"
 
     $new = array(
-        'name'                  => 'Каталог',
-        'singular_name'         => 'Тип',
-        'add_new'               => 'Добавить тип',
-        'add_new_item'          => 'Добавить тип',
-        'edit_item'             => 'Редактировать тип',
-        'new_item'              => 'Новый тип',
-        'view_item'             => 'Просмотреть тип',
-        'search_items'          => 'Поиск типов',
-        'not_found'             => 'Типы не найдены.',
-        'not_found_in_trash'    => 'Типы в корзине не найдены.',
+        'name'                  => 'Продукция',
+        'singular_name'         => 'Продукция',
+        'add_new'               => 'Добавить продукцию.',
+        'add_new_item'          => 'Добавить продукцию',
+        'edit_item'             => 'Редактировать продукцию',
+        'new_item'              => 'Новая продукция',
+        'view_item'             => 'Просмотреть продукцию',
+        'search_items'          => 'Поиск продукции',
+        'not_found'             => 'Продукция не найдены.',
+        'not_found_in_trash'    => 'Продукция в корзине не найдены.',
         'parent_item_colon'     => '',
-        'all_items'             => 'Все типы',
-        'archives'              => 'Архивы типов',
-        'insert_into_item'      => 'Вставить в тип',
-        'uploaded_to_this_item' => 'Загруженные для этого типа',
-        'featured_image'        => 'Миниатюра типа',
-        'filter_items_list'     => 'Фильтровать список типов',
-        'items_list_navigation' => 'Навигация по списку типов',
-        'items_list'            => 'Список типов',
-        'menu_name'             => 'Типы',
-        'name_admin_bar'        => 'Тип', // пункте "добавить"
+        'all_items'             => 'Все продукции',
+        'archives'              => 'Архивы продукции',
+        'insert_into_item'      => 'Вставить в продукцию',
+        'uploaded_to_this_item' => 'Загруженные для этой продукции',
+        'featured_image'        => 'Миниатюра продукции',
+        'filter_items_list'     => 'Фильтровать список продукции',
+        'items_list_navigation' => 'Навигация по списку продукции',
+        'items_list'            => 'Список продукции',
+        'menu_name'             => 'Продукция',
+        'name_admin_bar'        => 'Продукция',
     );
 
     return (object) array_merge( (array) $labels, $new );
@@ -136,7 +250,6 @@ function rename_service_labels( $labels ){
 
 add_filter('post_type_labels_testimonial', 'rename_testimonials_labels');
 function rename_testimonials_labels( $labels ){
-    // заменять автоматически нельзя: Запись = Статья, а в тексте получим "Просмотреть статья"
 
     $new = array(
         'name'                  => 'Отзывы',
@@ -159,7 +272,7 @@ function rename_testimonials_labels( $labels ){
         'items_list_navigation' => 'Навигация по списку отзывов',
         'items_list'            => 'Список отзывов',
         'menu_name'             => 'Отзывы',
-        'name_admin_bar'        => 'Отзыв', // пункте "добавить"
+        'name_admin_bar'        => 'Отзыв',
     );
 
     return (object) array_merge( (array) $labels, $new );
@@ -278,3 +391,217 @@ if( function_exists('acf_add_local_field_group') ):
     ));
 
 endif;
+
+    function archi_breadcrumbs() {
+        $text['home']     = "Главная"; // text for the 'Home' link
+        $text['category'] = '%s'; // text for a category page
+        $text['tax']      = '%s'; // text for a taxonomy page
+        $text['search']   = '%s'; // text for a search results page
+        $text['tag']      = '%s'; // text for a tag page
+        $text['author']   = '%s'; // text for an author page
+        $text['404']      = '404'; // text for the 404 page
+        $showCurrent = 1; // 1 - show current post/page title in breadcrumbs, 0 - don't show
+        $showOnHome  = 0; // 1 - show breadcrumbs on the homepage, 0 - don't show
+        $delimiter   = ' <b>/</b> '; // delimiter between crumbs
+        $before      = '<li class="active">'; // tag before the current crumb
+        $after       = '</li>'; // tag after the current crumb
+
+        global $post;
+        $homeLink = esc_url(home_url('/')) . '';
+        $linkBefore = '<li>';
+        $linkAfter = '</li>';
+        $linkAttr = ' rel="v:url" property="v:title"';
+        $link = $linkBefore . '<a' . $linkAttr . ' href="%1$s">%2$s</a>' . $linkAfter;
+
+        if (is_home() || is_front_page()) {
+
+            if ($showOnHome == 1) echo '<div id="crumbs"><a href="' . $homeLink . '">' . $text['home'] . '</a></div>';
+
+        } else {
+
+            echo '<ul class="crumb">' . sprintf($link, $homeLink, $text['home']) . $delimiter;
+
+            if ( is_category() ) {
+                $thisCat = get_category(get_query_var('cat'), false);
+                if ($thisCat->parent != 0) {
+                    $cats = get_category_parents($thisCat->parent, TRUE, $delimiter);
+                    $cats = str_replace('<a', $linkBefore . '<a' . $linkAttr, $cats);
+                    $cats = str_replace('</a>', '</a>' . $linkAfter, $cats);
+                    echo htmlspecialchars_decode( $cats );
+                }
+                echo htmlspecialchars_decode( $before ) . sprintf($text['category'], single_cat_title('', false)) . htmlspecialchars_decode( $after );
+
+            } elseif( is_tax() ){
+                $thisCat = get_category(get_query_var('cat'), false);
+                if ($thisCat->parent != 0) {
+                    $cats = get_category_parents($thisCat->parent, TRUE, $delimiter);
+                    $cats = str_replace('<a', $linkBefore . '<a' . $linkAttr, $cats);
+                    $cats = str_replace('</a>', '</a>' . $linkAfter, $cats);
+                    echo htmlspecialchars_decode( $cats );
+                }
+                echo htmlspecialchars_decode( $before ) . sprintf($text['tax'], single_cat_title('', false)) . htmlspecialchars_decode( $after );
+
+            }elseif ( is_search() ) {
+                echo htmlspecialchars_decode( $before ) . sprintf($text['search'], get_search_query()) . htmlspecialchars_decode( $after );
+
+            } elseif ( is_day() ) {
+                echo sprintf($link, get_year_link(get_the_time('Y')), get_the_time('Y')) . $delimiter;
+                echo sprintf($link, get_month_link(get_the_time('Y'),get_the_time('m')), get_the_time('F')) . $delimiter;
+                echo htmlspecialchars_decode( $before ) . get_the_time('d') . htmlspecialchars_decode( $after );
+
+            } elseif ( is_month() ) {
+                echo sprintf($link, get_year_link(get_the_time('Y')), get_the_time('Y')) . $delimiter;
+                echo htmlspecialchars_decode( $before ) . get_the_time('F') . htmlspecialchars_decode( $after );
+
+            } elseif ( is_year() ) {
+                echo htmlspecialchars_decode( $before ) . get_the_time('Y') . htmlspecialchars_decode( $after );
+
+            } elseif ( is_single() && !is_attachment() ) {
+                if ( get_post_type() != 'post' ) {
+                    $post_type = get_post_type_object(get_post_type());
+                    $slug = $post_type->rewrite;
+                    printf($link, $homeLink . '' . $slug['slug'] . '/', $post_type->labels->singular_name);
+                    if ($showCurrent == 1) echo htmlspecialchars_decode( $delimiter ) . $before . get_the_title() . $after;
+                } else {
+                    $cat = get_the_category(); $cat = $cat[0];
+                    $cats = get_category_parents($cat, TRUE, $delimiter);
+                    if ($showCurrent == 0) $cats = preg_replace("#^(.+)$delimiter$#", "$1", $cats);
+                    $cats = str_replace('<a', $linkBefore . '<a' . $linkAttr, $cats);
+                    $cats = str_replace('</a>', '</a>' . $linkAfter, $cats);
+                    echo htmlspecialchars_decode( $cats );
+                    if ($showCurrent == 1) echo htmlspecialchars_decode( $before ) . get_the_title() . $after;
+                }
+
+            } elseif ( !is_single() && !is_page() && get_post_type() != 'post' && !is_404() ) {
+
+                $post_type = get_post_type_object(get_post_type());
+                echo htmlspecialchars_decode( $before ) . $post_type->labels->singular_name . htmlspecialchars_decode( $after );
+
+            } elseif ( is_attachment() ) {
+                $parent = get_post($post->post_parent);
+                $cat = get_the_category($parent->ID); $cat = $cat[0];
+                $cats = get_category_parents($cat, TRUE, $delimiter);
+                $cats = str_replace('<a', $linkBefore . '<a' . $linkAttr, $cats);
+                $cats = str_replace('</a>', '</a>' . $linkAfter, $cats);
+                echo htmlspecialchars_decode( $cats );
+                printf($link, get_permalink($parent), $parent->post_title);
+                if ($showCurrent == 1) echo htmlspecialchars_decode( $delimiter ) . $before . get_the_title() . $after;
+
+            } elseif ( is_page() && !$post->post_parent ) {
+                if ($showCurrent == 1) echo htmlspecialchars_decode( $before ) . get_the_title() . $after;
+
+            } elseif ( is_page() && $post->post_parent ) {
+                $parent_id  = $post->post_parent;
+                $breadcrumbs = array();
+                while ($parent_id) {
+                    $page = get_page($parent_id);
+                    $breadcrumbs[] = sprintf($link, get_permalink($page->ID), get_the_title($page->ID));
+                    $parent_id  = $page->post_parent;
+                }
+                $breadcrumbs = array_reverse($breadcrumbs);
+                for ($i = 0; $i < count($breadcrumbs); $i++) {
+                    echo htmlspecialchars_decode( $breadcrumbs[$i] );
+                    if ($i != count($breadcrumbs)-1) echo htmlspecialchars_decode( $delimiter );
+                }
+                if ($showCurrent == 1) echo htmlspecialchars_decode( $delimiter ) . $before . get_the_title() . $after;
+
+            } elseif ( is_tag() ) {
+                echo htmlspecialchars_decode( $before ) . sprintf($text['tag'], single_tag_title('', false)) . $after;
+
+            } elseif ( is_author() ) {
+                global $author;
+                $userdata = get_userdata($author);
+                echo htmlspecialchars_decode( $before ) . sprintf($text['author'], $userdata->display_name) . $after;
+
+            } elseif ( is_404() ) {
+                echo htmlspecialchars_decode( $before ) . $text['404'] . $after;
+            }
+//            непнятно для чего 2 условия но работают местами неправильно
+//            if ( get_query_var('paged') ) {
+//                if ( is_category() || is_day() || is_month() || is_year() || is_search() || is_tag() || is_author() );
+//                if ( is_category() || is_day() || is_month() || is_year() || is_search() || is_tag() || is_author() ) echo ')';
+//            }
+
+            echo '</ul>';
+
+        }
+    }
+
+if (wp_doing_ajax()) {
+    add_action('wp_ajax_catalogsearch', 'getCatalogSearchResult');
+    add_action('wp_ajax_nopriv_catalogsearch', 'getCatalogSearchResult');
+}
+
+function getCatalogSearchResult()
+{
+    global $archi_option;
+    $showall = (!empty($archi_option['portfolio_text_all'])) ? $archi_option['portfolio_text_all'] : 'All Project';
+    $numbershow = (!empty($archi_option['portfolio_show'])) ? $archi_option['portfolio_show'] : 8;
+    $gap = (!empty($archi_option['projects_item_gap']) ? $archi_option['projects_item_gap'] . 'px' : '0px');
+    $imgwidth = (!empty($archi_option['project_image_width'])) ? $archi_option['project_image_width'] : 700;
+    $imgheight = (!empty($archi_option['project_image_height'])) ? $archi_option['project_image_height'] : 466;
+    if (intval( $_GET['page'])) {
+        $paged = intval( $_GET['page'] );
+    } else {
+        $paged = 1;
+    }
+    query_posts(array('post_type' => 'portfolio','s'=>esc_sql($_GET['s']),'categories'=>'stock' ,'posts_per_page' => $numbershow, 'paged' => $paged));
+    while (have_posts()) : the_post();
+        $cates = get_the_terms(get_the_ID(), 'categories');
+        $cate_name = '';
+        $cate_slug = '';
+        foreach ((array)$cates as $cate) {
+            if (count($cates) > 0) {
+                $cate_name .= $cate->name . '<span>, </span> ';
+                $cate_slug .= $cate->slug . ' ';
+            }
+        }
+        echo_galery_item($archi_option);
+    endwhile;
+
+    wp_die();
+}
+
+
+function echo_galery_item($archi_option){
+    ?>
+    <!-- gallery item -->
+    <div class="col-md-4 co;-lg-3 block_stock">
+        <h3 class="block_stock__titele"><?php the_title(); ?></h3>
+        <div class="block_stock__img">
+            <?php if (has_post_thumbnail()) {
+                the_post_thumbnail('thumb-service', array('class' => 'img-responsive'));
+            } ?>
+        </div>
+
+        <a href="<?php the_permalink(); ?>"
+           class=" simple-ajax-popup-align-top btn-line btn-fullwidth">Подробнее</a>
+    </div>
+
+    <!-- close gallery item -->
+    <?php
+}
+
+add_filter('esc_html', 'my_change_choose_an_option_text_func', 10, 2);
+
+function my_change_choose_an_option_text_func($args){
+    switch ($args){
+        case 'Leave a reply':
+            return 'Оставить отзыв';
+            break;
+        case 'Name *':
+            return 'Имя *';
+            break;
+        case 'Email *':
+            return 'Электронная почта *';
+            break;
+        case 'Comment *':
+            return 'Комментарий *';
+            break;
+        case 'Send Message':
+            return 'Отправить';
+            break;
+        default:
+            return $args;
+    }
+}
