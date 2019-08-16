@@ -35,6 +35,11 @@ function footer_script()
         });
         }
     </script>
+    <script>
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/lazysizes/4.1.8/lazysizes.min.js';
+        document.body.appendChild(script);
+    </script>
     <?php
 }
 add_action('wp_footer', 'footer_script',100);
@@ -604,4 +609,173 @@ function my_change_choose_an_option_text_func($args){
         default:
             return $args;
     }
+}
+
+
+
+// Portfolio Category
+add_shortcode('cate_portfolio1', 'cate_portfolio_func1');
+function cate_portfolio_func1($atts, $content = null){
+    extract(shortcode_atts(array(
+        'all'		=> 	'',
+        'show_filter'=> 'yes',
+        'show'      =>  '',
+        'idcate'  =>   '',
+        'columns'   => 	4,
+        'cropimage' => 'no',
+        'width'     => 	700,
+        'height'	=> 	466,
+        'arrow_btn' =>  '',
+        'cate_active' =>  '',
+        'gap'       =>  0,
+        'css'       => ''
+    ), $atts));
+    $show1 = (!empty($show) ? $show : 8);
+    $cate_active1 = (!empty($cate_active) ? '.'.$cate_active : '*');
+    $all1 = (!empty($all) ? $all : 'ALL PROJECTS');
+    $portfolio_category_isotope = uniqid( 'portfolio-gallery-' );
+    $item_isotope = uniqid( 'item-' );
+    $filters_isotope = uniqid( 'filters-' );
+    $gap1 = (!empty($gap) ? $gap.'px' : '0px');
+
+    ob_start(); ?>
+
+    <!-- Element: OT Portfolio Category -->
+    <?php if ( true) { ?>
+        <div class="container">
+            <!-- portfolio filter begin -->
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <ul id="<?php echo esc_attr($filters_isotope); ?>" class="filters wow fadeInUp" data-wow-delay="0s">
+                        <?php if($all != ''){ ?><li><a href="#" data-filter="*" <?php if($cate_active == ''){echo 'class="selected"';} ?>><?php echo esc_attr($all1); ?></a></li><?php } ?>
+                        <?php
+                        $categories = explode(",",$idcate);
+                        foreach( (array)$categories as $categorie){
+                            $cates = get_term_by('slug', $categorie, 'categories');
+                            $cat_name = $cates->name;
+                            $cat_slug = $cates->slug;
+                            ?>
+                            <li><a href="#" data-filter=".<?php echo htmlspecialchars_decode( $cat_slug ); ?>" <?php if($cate_active != '' && $cate_active == $cat_slug ){echo 'class="selected"';} ?> ><?php echo htmlspecialchars_decode( $cat_name ); ?></a></li>
+                        <?php } ?>
+                    </ul>
+                </div>
+            </div>
+            <!-- portfolio filter close -->
+        </div>
+    <?php } ?>
+
+    <div id="<?php echo esc_attr($portfolio_category_isotope); ?>" class="gallery full-gallery de-gallery pf_full_width portfolio_category <?php if ($columns == 2) {echo 'pf_2_cols'; }elseif ($columns == 3) { echo 'pf_3_cols'; }elseif ($columns == 5) { echo 'pf_5_cols'; }elseif ($columns == 6) { echo 'pf_6_cols'; }else{} ?> wow fadeInUp <?php echo vc_shortcode_custom_css_class( $css ); ?>" data-wow-delay=".3s" style="margin: -<?php echo esc_attr($gap1); ?> <?php echo esc_attr($gap1); ?>" >
+        <?php
+        $args = array(
+            'post_type' => 'portfolio',
+            'showposts' => $show1,
+            'tax_query' => array(
+                array(
+                    'taxonomy' => 'categories',
+                    'field' => 'slug',
+                    'terms' => explode(',',$idcate),
+                ),
+            ),
+        );
+        $wp_query = new WP_Query($args);
+        while ($wp_query -> have_posts()) : $wp_query -> the_post();
+            $cates = get_the_terms(get_the_ID(),'categories');
+            $cate_name ='';
+            $cate_slug = '';
+            $cate_slug_popup = '';
+            foreach((array)$cates as $cate){
+                if(count($cates)>0){
+                    $cate_name .= $cate->name.' ' ;
+                    $cate_slug .= $cate->slug .' ';
+                    $cate_slug_popup .= 'ajax-popup-' . $cate->slug . ' ';
+                }
+            }
+            ?>
+            <!-- gallery item -->213421421
+            <div class="item <?php echo esc_attr($cate_slug) . esc_attr($item_isotope); ?>">
+                <div class="picframe-new" style="margin:<?php echo esc_attr($gap1); ?>">
+                    <a <?php global $archi_option; if($archi_option['ajax_work']!=false){ ?>class="<?php if($arrow_btn == 'no'){echo 'single-ajax-popup';}else{echo esc_attr($cate_slug_popup);} ?>"<?php } ?> href="<?php the_permalink(); ?>">
+                        <div class="mask"></div>
+                        <div class="pr_text">
+                            <div class="project-name"><?php the_title(); ?></div>
+                        </div>
+                        <?php if ( has_post_thumbnail() ) : ?>
+                            <?php
+                            if (true) {
+                                $thumbnail = get_post( get_post_thumbnail_id() );
+                                $image_title = $thumbnail->post_title;
+                                $image_caption = $thumbnail->post_excerpt;
+                                $image_description = $thumbnail->post_content;
+                                $image_alt = get_post_meta( $thumbnail->ID, '_wp_attachment_image_alt', true );
+                                // Crop
+                                $params = array( 'width' => $width, 'height' => $height, 'crop' => true );
+                                $image = bfi_thumb( wp_get_attachment_url(get_post_thumbnail_id()), $params );
+                                ?>
+                                <img class="lazyload" data-src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($image_alt); ?>" title="<?php echo esc_attr($image_title); ?>" />
+                                <?php
+                            }else{
+                                ?>
+                                <img class="lazyload" data-src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($image_alt); ?>" title="<?php echo esc_attr($image_title); ?>" />
+                                <?php
+                            }
+                            ?>
+                        <?php endif; ?>
+                    </a>
+                </div>
+            </div>
+            <!-- close gallery item -->
+        <?php endwhile; wp_reset_postdata(); ?>
+    </div>
+
+    <script type="text/javascript">
+        jQuery(document).ready(function() {
+            'use strict';
+            window.onresize = function(event) {
+                jQuery('#<?php echo esc_attr($portfolio_category_isotope); ?>').isotope();
+            };
+            jQuery(window).load(function() {
+                var $container = jQuery('#<?php echo esc_attr($portfolio_category_isotope); ?>');
+                $container.isotope({
+                    itemSelector: '.<?php echo esc_attr($item_isotope); ?>',
+                    filter: '<?php echo esc_attr($cate_active1); ?>'
+                });
+                jQuery('#<?php echo esc_attr($filters_isotope); ?> a').on("click", function() {
+                    jQuery('#<?php echo esc_attr($filters_isotope); ?> a').removeClass('selected');
+                    jQuery(this).addClass('selected');
+
+                    var selector = jQuery(this).attr('data-filter');
+                    $container.isotope({
+                        filter: selector
+                    });
+                    return false;
+                });
+                jQuery('#<?php echo esc_attr($filters_isotope); ?> > li > a.selected').click();
+            });
+
+            <?php
+            $js_categories = explode(",",$idcate);
+            foreach( (array)$js_categories as $js_categorie){
+            $js_cates = get_term_by('slug', $js_categorie, 'categories');
+            $js_cat_slug = $js_cates->slug;
+            ?>
+            jQuery('.<?php echo 'ajax-popup-' . esc_attr($js_cat_slug); ?>').magnificPopup({
+                type: 'ajax',
+                alignTop: true,
+                overflowY: 'scroll',
+                fixedContentPos: true,
+                callbacks: {
+                    beforeOpen: function() { jQuery('html').addClass('mfp-helper'); },
+                    close: function() { jQuery('html').removeClass('mfp-helper'); }
+                },
+                gallery: {
+                    enabled: true
+                },
+            });
+            <?php } ?>
+        });
+
+    </script>
+
+    <?php
+    return ob_get_clean();
 }
