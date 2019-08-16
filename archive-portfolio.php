@@ -97,7 +97,7 @@ $imgheight = (!empty($archi_option['project_image_height'])) ? $archi_option['pr
                         $params = array( 'width' => $imgwidth, 'height' => $imgheight, 'crop' => true );
                         $image = bfi_thumb( wp_get_attachment_url(get_post_thumbnail_id()), $params );
                     ?>
-                        <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($image_alt); ?>" title="<?php echo esc_attr($image_title); ?>" />
+                        <img class="lazyload" data-src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($image_alt); ?>" title="<?php echo esc_attr($image_title); ?>" />
                     <?php
                       }else{
                         the_post_thumbnail( 'thumb-portfolio' );
@@ -123,3 +123,10 @@ $imgheight = (!empty($archi_option['project_image_height'])) ? $archi_option['pr
   <!-- content close -->
 
 <?php get_footer(); ?>
+<script>
+    // Dynamically import the LazySizes library
+    const script = document.createElement('script');
+    script.src =
+        'https://cdnjs.cloudflare.com/ajax/libs/lazysizes/4.1.8/lazysizes.min.js';
+    document.body.appendChild(script);
+</script>
